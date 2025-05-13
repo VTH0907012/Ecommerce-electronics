@@ -13,7 +13,7 @@ export async function PUT(req: Request) {
 
     const body = await req.json();
 
-    const res = await axiosInstance.post("/users/change-password", body, {
+    const res = await axiosInstance.post("/api/users/change-password", body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

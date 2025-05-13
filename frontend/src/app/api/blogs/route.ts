@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const res = await axiosInstance.post("/blogs", body, {
+    const res = await axiosInstance.post("/api/blogs", body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

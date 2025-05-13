@@ -7,7 +7,7 @@ export async function GET() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
-    const res = await axiosInstance.get("/users/me", {
+    const res = await axiosInstance.get("/api/users/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -34,7 +34,7 @@ export async function PUT(req: Request) {
     const body = await req.json();
 
     // Giả sử user id được trả về từ /users/me (có thể lưu userId vào state frontend nếu muốn)
-    const resMe = await axiosInstance.get("/users/me", {
+    const resMe = await axiosInstance.get("/api/users/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

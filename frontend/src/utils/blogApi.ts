@@ -2,12 +2,12 @@ import {  BlogItem } from "@/type/BlogItem";
 import axiosInstance from "./axiosConfig";
 
 export async function getAllBlogs() {
-  const response = await axiosInstance.get("/blogs");
+  const response = await axiosInstance.get("/api/blogs");
   return response.data;
 }
 
 export async function getBlogById(id: string){
-  const response = await axiosInstance.get(`/blogs/${id}`);
+  const response = await axiosInstance.get(`/api/blogs/${id}`);
   return response.data;
 }
 

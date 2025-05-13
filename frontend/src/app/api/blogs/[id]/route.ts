@@ -13,7 +13,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     const body = await req.json();
 
-    const res = await axiosInstance.put(`/blogs/${params.id}`, body, {
+    const res = await axiosInstance.put(`/api/blogs/${params.id}`, body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,7 +37,7 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
       return NextResponse.json({ message: "Chưa đăng nhập" }, { status: 401 });
     }
 
-    const res = await axiosInstance.delete(`/blogs/${params.id}`, {
+    const res = await axiosInstance.delete(`/api/blogs/${params.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

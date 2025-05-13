@@ -21,7 +21,7 @@ export const register = async (userData: {
   email: string;
   password: string;
 }) => {
-  const response = await axiosInstance.post("/register", userData);
+  const response = await axiosInstance.post("/api/register", userData);
   return response.data;
 };
 
@@ -86,18 +86,18 @@ export const updateUserProfile = async (userData: { name: string; email: string 
   return data;
 };
 export async function getAllUser() {
-  const response = await axiosInstance.get("/users");
+  const response = await axiosInstance.get("/api/users");
   return response.data;
 }
 export const deleteUser = async (id: string) => {
-  const response = await axiosInstance.delete(`/users/${id}`);
+  const response = await axiosInstance.delete(`/api/users/${id}`);
   return response.data;
 };
 export const toggleBlockUser = async (id: string) => {
-  const response = await axiosInstance.patch(`/users/${id}/block`);
+  const response = await axiosInstance.patch(`/api/users/${id}/block`);
   return response.data;
 };
 export const toggleAdmin = async (id: string) => {
-  const response = await axiosInstance.patch(`/users/${id}/admin`);
+  const response = await axiosInstance.patch(`/api/users/${id}/admin`);
   return response.data;
 };

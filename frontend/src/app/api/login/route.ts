@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
       await req.json();
 
     // Sử dụng axiosInstance thay vì fetch
-    const res = await axiosInstance.post("/login", { email, password });
+    const res = await axiosInstance.post("/api/login", { email, password });
 
     const data = res.data;
 

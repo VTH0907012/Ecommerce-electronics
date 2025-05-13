@@ -3,22 +3,22 @@ import { Brand } from "@/type/Brand";
 
 
 export const getAllBrands= async () => {
-    const response = await axiosInstance.get("/brands");
+    const response = await axiosInstance.get("/api/brands");
     return response.data;
   };
 
   
   export const createBrand = async (brand: Brand) => {
-    const response = await axiosInstance.post("/brands", brand);
+    const response = await axiosInstance.post("/api/brands", brand);
     return response.data;
   }
   
   export const updateBrand = async (id: string, brand: Brand) => {
-    const response = await axiosInstance.put(`/brands/${id}`, brand);
+    const response = await axiosInstance.put(`/api/brands/${id}`, brand);
     return response.data;
   };
   
   export const deleteBrand = async (id: string) => {
-    const response = await axiosInstance.delete(`/brands/${id}`);
+    const response = await axiosInstance.delete(`/api/brands/${id}`);
     return response.data;
   };

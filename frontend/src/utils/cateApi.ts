@@ -3,23 +3,23 @@ import { Category } from "@/type/Category";
 
 
 export const getAllCategorys= async () => {
-    const response = await axiosInstance.get("/categories");
+    const response = await axiosInstance.get("/api/categories");
     return response.data;
   };
 
   
   export const createCategory = async (Category: Category) => {
-    const response = await axiosInstance.post("/categories", Category);
+    const response = await axiosInstance.post("/api/categories", Category);
     return response.data;
   }
   
   export const updateCategory = async (id: string, Category: Category) => {
-    const response = await axiosInstance.put(`/categories/${id}`, Category);
+    const response = await axiosInstance.put(`/api/categories/${id}`, Category);
     return response.data;
   };
   
   export const deleteCategory = async (id: string) => {
-    const response = await axiosInstance.delete(`/categories/${id}`);
+    const response = await axiosInstance.delete(`/api/categories/${id}`);
     return response.data;
   };
   

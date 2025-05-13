@@ -13,6 +13,8 @@ import { getOrdersByUser, cancelOrder } from "@/utils/orderApi";
 import { fmt } from "@/utils/fmt";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ProfileSkeleton } from "../Common/SkeletonLoading";
+import { Order } from "@/type/Order";
+import ConfirmDeleteModal from "../../Confirm";
 
 const translateStatus = (status: string) => {
   switch (status) {
@@ -118,17 +120,41 @@ const Profile = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId: string) => {
-    setCancellingOrderId(orderId);
+  // const handleCancelOrder = async (orderId: string) => {
+  //   setCancellingOrderId(orderId);
+  //   try {
+  //     await cancelOrder(orderId);
+  //     toast.success("Đã hủy đơn hàng thành công!");
+  //     await fetchOrders();
+  //   } catch (err: any) {
+  //     toast.error(err.message);
+  //   } finally {
+  //     setCancellingOrderId(null);
+  //   }
+  // };
+
+  const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleCancelOrder = async () => {
+    if (!orderToDelete) return;
+    setCancellingOrderId(orderToDelete._id!);
     try {
-      await cancelOrder(orderId);
-      toast.success("Đã hủy đơn hàng thành công!");
+      await cancelOrder(orderToDelete._id!);
+
+      toast.success("huỷ đơn hàng thành công thành công");
       await fetchOrders();
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
-      setCancellingOrderId(null);
+      setShowDeleteModal(false);
     }
+    setCancellingOrderId(null);
+  };
+
+  const confirmDelete = (order: Order) => {
+    setOrderToDelete(order);
+    setShowDeleteModal(true);
   };
 
   const renderTabContent = () => {
@@ -185,19 +211,20 @@ const Profile = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleCancelOrder(order._id);
+                              // handleCancelOrder(order._id);
+                              confirmDelete(order);
                             }}
                             disabled={cancellingOrderId === order._id}
                             className={`
-    relative inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium
-    ${
-      cancellingOrderId === order._id
-        ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-        : "bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 hover:border-red-300"
-    }
-    transition-all duration-200 ease-in-out
-    shadow-sm
-  `}
+                              relative inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium
+                              ${
+                                cancellingOrderId === order._id
+                                  ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                  : "bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 hover:border-red-300"
+                              }
+                              transition-all duration-200 ease-in-out
+                              shadow-sm
+                            `}
                           >
                             {cancellingOrderId === order._id ? (
                               <>
@@ -300,7 +327,8 @@ const Profile = () => {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleCancelOrder(order._id);
+                                  // handleCancelOrder(order._id);
+                                  confirmDelete(order);
                                 }}
                                 disabled={cancellingOrderId === order._id}
                                 className={`
@@ -543,6 +571,12 @@ const Profile = () => {
           </div>
         </div>
       )}
+      <ConfirmDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleCancelOrder}
+        content="Bạn có chắc chắn muốn huỷ đơn này?"
+      />
     </section>
   );
 };
