@@ -4,13 +4,17 @@ import { Product } from "@/type/Product";
 import Breadcrumb from "@/app/components/client/ShopDetails/Breadcrumb";
 import ProductDetailSkeleton from "@/app/components/client/ShopDetails/ProductDetailSkeleton";
 import ProductDetail from "@/app/components/client/ShopDetails/ProductDetail";
+import { Metadata } from 'next'
 
-type Props = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
+  return {
+    title: `Product ${params.id}`
+  }
+}
 
-const ProductDetailPage = async ({ params }: Props) => {
+const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   let product: Product | null = null;
   let loading = true;
 
