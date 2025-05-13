@@ -1,0 +1,272 @@
+"use client";
+import { useSelector, useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { RootState } from "@/redux";
+import { useState } from "react";
+import { createOrder } from "@/utils/orderApi";
+import { useRouter } from "next/navigation";
+import { clearCart } from "@/redux/cartSlice";
+import { FiShoppingBag, FiTruck, FiCreditCard, FiDollarSign } from "react-icons/fi";
+
+const Checkout = () => {
+  const items = useSelector((state: RootState) => state.cart.items);
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [shippingInfo, setShippingInfo] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+    note: "",
+    paymentMethod: "cod", 
+  });
+  
+  const total = items.reduce((sum, item) => {
+    const price = item.discountPrice ?? item.price;
+    return sum + price * item.quantity;
+  }, 0);
+
+  const shippingFee = total > 500000 ? 0 : 30000;
+  const grandTotal = total + shippingFee;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user?._id) {
+      toast.error("Vui lòng đăng nhập trước khi thanh toán!");
+      return;
+    }
+
+    const orderData = {
+      userId: user._id,
+      shippingInfo,
+      items: items.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity,
+        name: item.name,
+        price: item.discountPrice ?? item.price
+      })),
+      total: grandTotal,
+      shippingFee,
+    };
+
+    try {
+      await createOrder(orderData);
+      toast.success("Đặt hàng thành công!");
+      dispatch(clearCart());
+      router.push("/");
+    } catch (error: any) {
+      toast.error(error.message || "Có lỗi xảy ra khi đặt hàng");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center mb-8">
+          <FiShoppingBag className="text-2xl text-blue-600 mr-2" />
+          <h1 className="text-3xl font-bold text-gray-900">Thanh toán</h1>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center mb-6">
+                <div className="bg-blue-100 p-2 rounded-full mr-3">
+                  <FiTruck className="text-blue-600 text-lg" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-800">Thông tin giao hàng</h2>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                    <input
+                      name="fullName"
+                      value={shippingInfo.fullName}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                    <input
+                      name="phone"
+                      value={shippingInfo.phone}
+                      onChange={handleChange}
+                      required
+                      type="tel"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ nhận hàng</label>
+                  <input
+                    name="address"
+                    value={shippingInfo.address}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ghi chú (tuỳ chọn)</label>
+                  <textarea
+                    name="note"
+                    value={shippingInfo.note}
+                    onChange={handleChange}
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    placeholder="Ví dụ: Giao hàng giờ hành chính..."
+                  />
+                </div>
+
+                <div className="pt-4">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-blue-100 p-2 rounded-full mr-3">
+                      <FiCreditCard className="text-blue-600 text-lg" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">Phương thức thanh toán</h2>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="cod"
+                        checked={shippingInfo.paymentMethod === "cod"}
+                        onChange={handleChange}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">Thanh toán khi nhận hàng (COD)</p>
+                        <p className="text-sm text-gray-500 mt-1">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng</p>
+                      </div>
+                    </label>
+
+                    <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="bank"
+                        checked={shippingInfo.paymentMethod === "bank"}
+                        onChange={handleChange}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">Chuyển khoản ngân hàng</p>
+                        <p className="text-sm text-gray-500 mt-1">Chuyển khoản qua tài khoản ngân hàng của chúng tôi</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <FiShoppingBag className="mr-2 text-blue-600" />
+                Đơn hàng của bạn
+              </h2>
+
+              {items.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">Giỏ hàng của bạn đang trống</p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    {items.map((item) => (
+                      <div key={item._id} className="flex gap-4 items-start pb-4 border-b border-gray-100">
+                        <div className="relative">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-16 object-contain rounded-lg border"
+                          />
+                          <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center mt-2">
+                            {item.quantity}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-800 line-clamp-2">{item.name}</h4>
+                          <div className="flex items-center mt-1">
+                            <p className="text-sm font-semibold text-red-500">
+                              {(item.discountPrice ?? item.price).toLocaleString("vi-VN")}₫
+                            </p>
+                            {item.discountPrice && (
+                              <p className="text-xs line-through text-gray-400 ml-2">
+                                {item.price.toLocaleString("vi-VN")}₫
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    <div className="flex justify-between text-gray-600">
+                      <span>Tạm tính:</span>
+                      <span>{total.toLocaleString("vi-VN")}₫</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Phí vận chuyển:</span>
+                      <span>{shippingFee === 0 ? "Miễn phí" : shippingFee.toLocaleString("vi-VN") + "₫"}</span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold text-gray-800 pt-3 border-t border-gray-200">
+                      <span>Tổng cộng:</span>
+                      <span>{grandTotal.toLocaleString("vi-VN")}₫</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleSubmit}
+                    disabled={items.length === 0}
+                    className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    Đặt hàng ngay
+                  </button>
+
+                  <p className="text-xs text-gray-500 mt-4 text-center">
+                    Bằng cách đặt hàng, bạn đồng ý với Điều khoản dịch vụ của chúng tôi
+                  </p>
+                </>
+              )}
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-green-100 p-2 rounded-full mr-3">
+                  <FiDollarSign className="text-green-600 text-lg" />
+                </div>
+                <h3 className="font-medium text-gray-800">Thanh toán an toàn</h3>
+              </div>
+              <p className="text-sm text-gray-600">
+                Thông tin thanh toán của bạn được bảo mật và mã hóa. Chúng tôi không lưu trữ thông tin thẻ tín dụng của bạn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;
