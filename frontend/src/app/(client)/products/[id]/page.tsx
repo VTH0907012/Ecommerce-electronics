@@ -392,8 +392,13 @@ import { Product } from "@/type/Product";
 import Breadcrumb from "@/app/components/client/ShopDetails/Breadcrumb";
 import ProductDetailSkeleton from "@/app/components/client/ShopDetails/ProductDetailSkeleton";
 import ProductDetail from "@/app/components/client/ShopDetails/ProductDetail";
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
 
-const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
+const ProductDetailPage = async ({ params }: PageProps) => {
   let product: Product | null = null;
   let loading = true;
 
