@@ -27,12 +27,10 @@ const Login = () => {
         dispatch(setCredentials(res));
         toast.success("Đăng nhập thành công!");
         router.push("/checkout");
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          toast.error(err.message);
-        } else {
+      } catch (err: any) {
+          console.log(err);
           toast.error("Đăng nhập thất bại");
-        }
+        
       } finally {
         setIsLoading(false);
       }
