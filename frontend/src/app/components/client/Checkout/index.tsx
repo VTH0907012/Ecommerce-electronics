@@ -276,78 +276,80 @@ const Checkout = () => {
                         </p>
                       </div>
                     </label> */}
-                    <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="vnpay"
-                        checked={shippingInfo.paymentMethod === "vnpay"}
-                        onChange={handleChange}
-                        className="mt-1 mr-3"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="font-medium text-gray-800">
-                              Thanh toán qua VNPay
-                            </p>
-                            <p className="text-sm text-gray-500 mt-1">
-                              Thanh toán an toàn qua cổng VNPay (Môi trường
-                              sandbox)
-                            </p>
-                          </div>
-                        </div>
+<label className="flex flex-col sm:flex-row items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+  <div className="flex items-start w-full">
+    <input
+      type="radio"
+      name="paymentMethod"
+      value="vnpay"
+      checked={shippingInfo.paymentMethod === "vnpay"}
+      onChange={handleChange}
+      className="mt-1 mr-3"
+    />
+    <div className="flex-1">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-medium text-gray-800">
+            Thanh toán qua VNPay
+          </p>
+          <p className="text-sm text-gray-500 mt-1">
+            Thanh toán an toàn qua cổng VNPay (Môi trường sandbox)
+          </p>
+        </div>
+      </div>
 
-                        <div className="mt-3 bg-gray-50 rounded-lg p-3">
-                          <div className="flex items-center">
-                            <svg
-                              className="w-4 h-4 text-blue-500 mr-2"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <p className="text-sm font-medium text-gray-700">
-                              Tài liệu test case: {""}
-                            </p>
-                            <a
-                              href="https://sandbox.vnpayment.vn/apis/vnpay-demo/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className=" flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
-                            >
-                              <svg
-                                className="w-4 h-4 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                />
-                              </svg>
-                              https://sandbox.vnpayment.vn/apis/vnpay-demo/
-                            </a>
-                          </div>
+      <div className="mt-3 bg-gray-50 rounded-lg p-3">
+        <div className="flex flex-col xs:flex-row xs:items-center">
+          <div className="flex items-center mb-2 xs:mb-0">
+            <svg
+              className="w-4 h-4 text-blue-500 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p className="text-sm font-medium text-gray-700">
+              Tài liệu test case: {""}
+            </p>
+          </div>
+          <a
+            href="https://sandbox.vnpayment.vn/apis/vnpay-demo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+            <span className="break-all">https://sandbox.vnpayment.vn/apis/vnpay-demo/</span>
+          </a>
+        </div>
 
-                          <div className="mt-3 pt-3 border-t border-gray-200">
-                            <p className="text-xs text-yellow-600 font-medium">
-                              ⚠️ Lưu ý: Đây là cổng thanh toán test, không sử
-                              dụng thông tin thật
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </label>
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <p className="text-xs text-yellow-600 font-medium">
+            ⚠️ Lưu ý: Đây là cổng thanh toán test, không sử dụng thông tin thật
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</label>
                   </div>
                 </div>
               </form>
