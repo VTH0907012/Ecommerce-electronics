@@ -1,4 +1,4 @@
-import { Order } from "@/type/Order";
+import { Order, OrderStatus } from "@/type/Order";
 import axiosInstance from "./axiosConfig";
 
 
@@ -7,7 +7,7 @@ export const createOrder = async (orderData: Omit<Order, "_id" | "createdAt" | "
     return response.data;
   };
   
-  export const updateOrderStatus = async (orderId: string, status: "pending" | "shipped" | "delivered" | "cancelled") => {
+  export const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
     const response = await axiosInstance.put(`/api/orders/${orderId}/status`, { status });
     return response.data;
   };
@@ -31,3 +31,18 @@ export const createOrder = async (orderData: Omit<Order, "_id" | "createdAt" | "
     const response = await axiosInstance.get("/api/orders/revenue-by-month");
     return response.data;
   };
+
+    export const createVnpayPayment = async (body : any) => {
+    const response = await axiosInstance.post("/api/orders/creat-payment-vnpay",body);
+    return response.data;
+  };
+    export const createOrderTemp = async (body : any) => {
+    const response = await axiosInstance.post("/api/orders/temp",body);
+    return response.data;
+  };
+    
+  export const getOrderdetails = async (orderId: any) => {
+    const response = await axiosInstance.get(`/api/orders/${orderId}/details`);
+    return response.data;
+  };
+  

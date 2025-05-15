@@ -64,6 +64,8 @@ export default function OrderManager() {
 
   const getStatusText = (status: OrderStatus) => {
     switch (status) {
+      case "pending_payment_vnpay":
+        return "Chờ thanh toán VNPay";
       case "pending":
         return "Đang xử lý";
       case "shipped":
@@ -79,6 +81,8 @@ export default function OrderManager() {
 
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
+      case "pending_payment_vnpay":
+        return "bg-purple-500";
       case "pending":
         return "bg-yellow-500";
       case "shipped":
@@ -340,6 +344,10 @@ export default function OrderManager() {
                 onChange={(e) => setNewStatus(e.target.value as OrderStatus)}
                 className="px-3 py-2 border rounded w-full focus:ring-blue-500 focus:border-blue-500"
               >
+                <option value="pending_payment_vnpay">
+                  Đang chờ thay toán vnpay
+                </option>
+
                 <option value="pending">Đang xử lý</option>
                 <option value="shipped">Đang giao</option>
                 <option value="delivered">Đã giao</option>

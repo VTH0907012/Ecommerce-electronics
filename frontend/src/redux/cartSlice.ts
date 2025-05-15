@@ -42,9 +42,17 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
-
+    updateQuantity: (state, action: PayloadAction<{id: string; quantity: number}>) => {
+      const { id, quantity } = action.payload;
+      const index = state.items.findIndex(item => item._id === id);
+      
+      if (index !== -1) {
+        // Đảm bảo số lượng không nhỏ hơn 1
+        state.items[index].quantity = Math.max(1, quantity);
+      }
+    },
   },
 });
 
-export const { addToCart, removeFromCart, toggleCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, toggleCart, clearCart ,updateQuantity} = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;

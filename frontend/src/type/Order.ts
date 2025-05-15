@@ -19,7 +19,7 @@ export interface ShippingInfo {
     shippingInfo: ShippingInfo;  
     items: Item[];  
     total: number;  
-    status: "pending" | "shipped" | "delivered" | "cancelled";  
+    status: "pending_payment_vnpay"|"pending" | "shipped" | "delivered" | "cancelled";  
     createdAt: string; 
   }
- export type OrderStatus = "pending" | "shipped" | "delivered" | "cancelled";
+ export type OrderStatus ="pending_payment_vnpay"|"pending" | "shipped" | "delivered" | "cancelled";  

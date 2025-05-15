@@ -3,10 +3,20 @@ import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { RootState } from "@/redux";
 import { useState } from "react";
-import { createOrder } from "@/utils/orderApi";
+import {
+  createOrder,
+  createOrderTemp,
+  createVnpayPayment,
+} from "@/utils/orderApi";
 import { useRouter } from "next/navigation";
 import { clearCart } from "@/redux/cartSlice";
-import { FiShoppingBag, FiTruck, FiCreditCard, FiDollarSign } from "react-icons/fi";
+import {
+  FiShoppingBag,
+  FiTruck,
+  FiCreditCard,
+  FiDollarSign,
+} from "react-icons/fi";
+import { fmt } from "@/utils/fmt";
 
 const Checkout = () => {
   const items = useSelector((state: RootState) => state.cart.items);
@@ -19,23 +29,94 @@ const Checkout = () => {
     phone: "",
     address: "",
     note: "",
-    paymentMethod: "cod", 
+    paymentMethod: "cod",
   });
-  
+
   const total = items.reduce((sum, item) => {
     const price = item.discountPrice ?? item.price;
     return sum + price * item.quantity;
   }, 0);
 
-  const shippingFee = total > 500000 ? 0 : 30000;
-  const grandTotal = total + shippingFee;
-
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
   };
 
+  // const handleVnpayPayment = async () => {
+  //   try {
+  //     // 1. Tạo orderId tạm (có thể là timestamp hoặc random string)
+  //     const tempOrderId = `temp_${Date.now()}`;
+
+  //     // 2. Chuẩn bị dữ liệu thanh toán
+  //     const paymentData = {
+  //       orderId: tempOrderId,
+  //       amount: total,
+  //       //ipAddr: await getClientIP(), // Lấy IP client
+  //       orderInfo: {
+  //         userId: user?._id,
+  //         shippingInfo,
+  //         items: items.map((item) => ({
+  //           productId: item._id,
+  //           name: item.name,
+  //           quantity: item.quantity,
+  //           price: item.discountPrice ?? item.price,
+  //         })),
+  //         total,
+  //       },
+  //     };
+
+  //     // 3. Gọi API tạo thanh toán VNPay
+  //     const response = await createVnpayPayment(paymentData);
+
+  //     // 4. Chuyển hướng đến VNPay
+  //     //window.location.href = response.paymentUrl;
+  //     console.log(response.paymentUrl);
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     toast.error("Lỗi khi tạo thanh toán VNPay");
+  //   }
+  // };
+
+  const handleVnpayPayment = async () => {
+    try {
+      // 1. Tạo đơn hàng tạm
+      const response = await createOrderTemp({
+        userId: user?._id,
+        shippingInfo,
+        items: items.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.discountPrice ?? item.price,
+        })),
+        total,
+      });
+
+      console.log("Full API response:", response); // Debug toàn bộ response
+
+      // 2. Kiểm tra cấu trúc response
+      if (!response?.order?._id) {
+        throw new Error("Invalid order data structure");
+      }
+
+      // 3. Gọi API thanh toán với orderId
+      const paymentResponse = await createVnpayPayment({
+        orderId: response.order._id, // Truy cập đúng đường dẫn
+      });
+
+      // 4. Chuyển hướng
+      window.location.href = paymentResponse.paymentUrl;
+    } catch (error: any) {
+      console.error("Payment error details:", {
+        error: error.message,
+        response: error.response?.data,
+      });
+      toast.error(error.response?.data?.message || "Lỗi thanh toán");
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,7 +124,9 @@ const Checkout = () => {
       toast.error("Vui lòng đăng nhập trước khi thanh toán!");
       return;
     }
-
+    if (shippingInfo.paymentMethod === "vnpay") {
+      return handleVnpayPayment();
+    }
     const orderData = {
       userId: user._id,
       shippingInfo,
@@ -51,17 +134,18 @@ const Checkout = () => {
         productId: item._id,
         quantity: item.quantity,
         name: item.name,
-        price: item.discountPrice ?? item.price
+        price: item.discountPrice ?? item.price,
       })),
-      total: grandTotal,
-      shippingFee,
+      total: total,
     };
 
     try {
-      await createOrder(orderData);
-      toast.success("Đặt hàng thành công!");
+      const data = await createOrder(orderData);
+      console.log(data);
+      //toast.success("Đặt hàng thành công!");
       dispatch(clearCart());
-      router.push("/");
+
+      router.push(`/order-success/${data.order._id}`);
     } catch (error: any) {
       toast.error(error.message || "Có lỗi xảy ra khi đặt hàng");
     }
@@ -82,13 +166,17 @@ const Checkout = () => {
                 <div className="bg-blue-100 p-2 rounded-full mr-3">
                   <FiTruck className="text-blue-600 text-lg" />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-800">Thông tin giao hàng</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Thông tin giao hàng
+                </h2>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Họ và tên
+                    </label>
                     <input
                       name="fullName"
                       value={shippingInfo.fullName}
@@ -99,7 +187,9 @@ const Checkout = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Số điện thoại
+                    </label>
                     <input
                       name="phone"
                       value={shippingInfo.phone}
@@ -112,7 +202,9 @@ const Checkout = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ nhận hàng</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ nhận hàng
+                  </label>
                   <input
                     name="address"
                     value={shippingInfo.address}
@@ -123,7 +215,9 @@ const Checkout = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ghi chú (tuỳ chọn)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ghi chú (tuỳ chọn)
+                  </label>
                   <textarea
                     name="note"
                     value={shippingInfo.note}
@@ -139,7 +233,9 @@ const Checkout = () => {
                     <div className="bg-blue-100 p-2 rounded-full mr-3">
                       <FiCreditCard className="text-blue-600 text-lg" />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-800">Phương thức thanh toán</h2>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Phương thức thanh toán
+                    </h2>
                   </div>
 
                   <div className="space-y-3">
@@ -153,12 +249,16 @@ const Checkout = () => {
                         className="mt-1 mr-3"
                       />
                       <div>
-                        <p className="font-medium text-gray-800">Thanh toán khi nhận hàng (COD)</p>
-                        <p className="text-sm text-gray-500 mt-1">Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng</p>
+                        <p className="font-medium text-gray-800">
+                          Thanh toán khi nhận hàng (COD)
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng
+                        </p>
                       </div>
                     </label>
 
-                    <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                    {/* <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
                       <input
                         type="radio"
                         name="paymentMethod"
@@ -168,8 +268,31 @@ const Checkout = () => {
                         className="mt-1 mr-3"
                       />
                       <div>
-                        <p className="font-medium text-gray-800">Chuyển khoản ngân hàng</p>
-                        <p className="text-sm text-gray-500 mt-1">Chuyển khoản qua tài khoản ngân hàng của chúng tôi</p>
+                        <p className="font-medium text-gray-800">
+                          Chuyển khoản ngân hàng
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Chuyển khoản qua tài khoản ngân hàng của chúng tôi
+                        </p>
+                      </div>
+                    </label> */}
+                    <label className="flex items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="vnpay"
+                        checked={shippingInfo.paymentMethod === "vnpay"}
+                        onChange={handleChange}
+                        className="mt-1 mr-3"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          Thanh toán qua VNPay
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Thanh toán an toàn qua cổng VNPay (Lưu ý chỉ là cổng
+                          test)
+                        </p>
                       </div>
                     </label>
                   </div>
@@ -193,7 +316,10 @@ const Checkout = () => {
                 <>
                   <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                     {items.map((item) => (
-                      <div key={item._id} className="flex gap-4 items-start pb-4 border-b border-gray-100">
+                      <div
+                        key={item._id}
+                        className="flex gap-4 items-start pb-4 border-b border-gray-100"
+                      >
                         <div className="relative">
                           <img
                             src={item.image}
@@ -205,14 +331,16 @@ const Checkout = () => {
                           </span>
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-800 line-clamp-2">{item.name}</h4>
+                          <h4 className="font-medium text-gray-800 line-clamp-2">
+                            {item.name}
+                          </h4>
                           <div className="flex items-center mt-1">
                             <p className="text-sm font-semibold text-red-500">
-                              {(item.discountPrice ?? item.price).toLocaleString("vi-VN")}₫
+                              {fmt(item.discountPrice ?? item.price)}
                             </p>
-                            {item.discountPrice && (
+                            {item.discountPrice! > 0 && (
                               <p className="text-xs line-through text-gray-400 ml-2">
-                                {item.price.toLocaleString("vi-VN")}₫
+                                {fmt(item.discountPrice)}₫
                               </p>
                             )}
                           </div>
@@ -222,17 +350,14 @@ const Checkout = () => {
                   </div>
 
                   <div className="mt-6 space-y-3">
-                    <div className="flex justify-between text-gray-600">
+                    {/* <div className="flex justify-between text-gray-600">
                       <span>Tạm tính:</span>
                       <span>{total.toLocaleString("vi-VN")}₫</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>Phí vận chuyển:</span>
-                      <span>{shippingFee === 0 ? "Miễn phí" : shippingFee.toLocaleString("vi-VN") + "₫"}</span>
-                    </div>
+                    </div> */}
+
                     <div className="flex justify-between text-lg font-bold text-gray-800 pt-3 border-t border-gray-200">
                       <span>Tổng cộng:</span>
-                      <span>{grandTotal.toLocaleString("vi-VN")}₫</span>
+                      <span>{fmt(total)}</span>
                     </div>
                   </div>
 
@@ -245,7 +370,8 @@ const Checkout = () => {
                   </button>
 
                   <p className="text-xs text-gray-500 mt-4 text-center">
-                    Bằng cách đặt hàng, bạn đồng ý với Điều khoản dịch vụ của chúng tôi
+                    Bằng cách đặt hàng, bạn đồng ý với Điều khoản dịch vụ của
+                    chúng tôi
                   </p>
                 </>
               )}
@@ -256,10 +382,13 @@ const Checkout = () => {
                 <div className="bg-green-100 p-2 rounded-full mr-3">
                   <FiDollarSign className="text-green-600 text-lg" />
                 </div>
-                <h3 className="font-medium text-gray-800">Thanh toán an toàn</h3>
+                <h3 className="font-medium text-gray-800">
+                  Thanh toán an toàn
+                </h3>
               </div>
               <p className="text-sm text-gray-600">
-                Thông tin thanh toán của bạn được bảo mật và mã hóa. Chúng tôi không lưu trữ thông tin thẻ tín dụng của bạn.
+                Thông tin thanh toán của bạn được bảo mật và mã hóa. Chúng tôi
+                không lưu trữ thông tin thẻ tín dụng của bạn.
               </p>
             </div>
           </div>

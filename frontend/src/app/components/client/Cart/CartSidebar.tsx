@@ -74,9 +74,22 @@ const CartSidebar = () => {
                     <p className="text-sm font-semibold text-slate-800">
                       {item.name}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Giá: {fmt(item.discountPrice ?? item.price)}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      {item.discountPrice && item.discountPrice < item.price ? (
+                        <>
+                          <p className="text-sm text-red-500 font-medium">
+                            {fmt(item.discountPrice)}
+                          </p>
+                          <p className="text-sm text-gray-400 line-through">
+                            {fmt(item.price)}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          {fmt(item.price)}
+                        </p>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-500">
                       Số lượng: {item.quantity}
                     </p>
@@ -107,10 +120,11 @@ const CartSidebar = () => {
             <button
               onClick={() => {
                 dispatch(toggleCart());
+                router.push("/cart");
               }}
               className="flex-1 py-3 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700"
             >
-              Tiếp tục mua sắm
+              Chi tiết giỏ hàng
             </button>
             <button
               onClick={handlePaymentClick}

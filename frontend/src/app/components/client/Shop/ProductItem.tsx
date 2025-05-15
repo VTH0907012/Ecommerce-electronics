@@ -10,35 +10,37 @@ import Rating from "../Rating";
 import { fmt } from "@/utils/fmt";
 import { useRouter } from "next/navigation";
 
-
 const ProductItem = ({ item }: { item: Product }) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const handleQuickView = (item: any) => {
-
     router.push(`/products/${item._id}`);
-
   };
 
   const handleAddToCart = () => {
     dispatch(addToCart({ ...item, quantity: 1 }));
   };
 
-  const handleAddToWishlist = () => {
-  };
+  const handleAddToWishlist = () => {};
 
   return (
     <>
       <div className="group p-2 hover:shadow-md transition duration-300">
         <div className="relative bg-gray-100 overflow-hidden mb-3 h-60 flex items-center justify-center">
-          <Image
+          {/* <Image
             src={item.images![0] || ""}
             alt={item.name}
             width={200}
             height={200}
             className="object-contain"
+          /> */}
+          <Image
+            src={item.images![0] || ""}
+            alt={item.name}
+            width={200}
+            height={200}
+            className="object-contain w-auto h-auto" // Add w-auto h-auto
           />
-
           <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200 flex justify-center gap-3 py-2">
             <button
               onClick={() => handleQuickView(item)}
@@ -82,8 +84,6 @@ const ProductItem = ({ item }: { item: Product }) => {
           )}
         </p>
       </div>
-
-
     </>
   );
 };

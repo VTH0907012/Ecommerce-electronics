@@ -19,7 +19,9 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
     <div
       className={`fixed inset-0 bg-[rgba(0,0,0,0.3)] flex items-center justify-center z-50 ${
         isOpen ? "block" : "hidden"
-      }`}
+      }` 
+    
+    }
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h3 className="text-lg font-semibold mb-4">Xác nhận</h3>
