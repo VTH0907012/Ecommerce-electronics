@@ -391,9 +391,9 @@ const Checkout = () => {
                             <p className="text-sm font-semibold text-red-500">
                               {fmt(item.discountPrice ?? item.price)}
                             </p>
-                            {item.discountPrice! > 0 && (
+                            {item.price! > 0 && (
                               <p className="text-xs line-through text-gray-400 ml-2">
-                                {fmt(item.discountPrice)}₫
+                                {fmt(item.price)}
                               </p>
                             )}
                           </div>
