@@ -86,7 +86,7 @@ const ViewCart = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cart Items */}
             <div className="lg:w-2/3">
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden ">
                 {/* Table Header */}
                 <div className="hidden md:grid grid-cols-12 bg-gray-50 px-6 py-3 border-b text-sm font-medium text-gray-500 uppercase">
                   <div className="col-span-5">Sản phẩm</div>
@@ -128,7 +128,7 @@ const ViewCart = () => {
                           )}
                           <button
                             onClick={() => dispatch(removeFromCart(item._id))}
-                            className="mt-2 flex items-center text-sm text-red-500 hover:text-red-700"
+                            className="mt-2 flex items-center text-sm text-red-500 hover:text-red-700 cursor-pointer"
                           >
                             <FiTrash2 className="mr-1" />
                             Xóa
@@ -161,7 +161,7 @@ const ViewCart = () => {
                             onClick={() =>
                               handleQuantityChange(item._id, item.quantity - 1)
                             }
-                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm"
+                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm cursor-pointer"
                           >
                             -
                           </button>
@@ -172,7 +172,7 @@ const ViewCart = () => {
                             onClick={() =>
                               handleQuantityChange(item._id, item.quantity + 1)
                             }
-                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm"
+                            className="px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm cursor-pointer"
                           >
                             +
                           </button>
@@ -243,7 +243,7 @@ const ViewCart = () => {
                 {/* Checkout Button */}
                 <button
                   onClick={handleCheckout}
-                  className="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium"
+                  className="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium cursor-pointer"
                 >
                   Tiến hành thanh toán
                 </button>

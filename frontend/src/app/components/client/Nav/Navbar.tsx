@@ -299,12 +299,12 @@ const Navbar = () => {
 
               <button
                 onClick={handleCartClick}
-                className="flex flex-col items-center text-xs text-gray-700 hover:text-blue-600 relative group"
+                className="flex flex-col items-center text-xs text-gray-700 hover:text-blue-600 relative group cursor-pointer"
               >
                 <div className="relative">
-                  <FiShoppingCart className="h-5 w-5 group-hover:stroke-blue-600" />
+                  <FiShoppingCart className="h-5 w-5 group-hover:stroke-blue-600 " />
                   {cartItems.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className=" absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                       {cartItems.length}
                     </span>
                   )}

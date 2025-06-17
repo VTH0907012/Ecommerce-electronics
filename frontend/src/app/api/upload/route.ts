@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import path from 'path';
+import { AxiosError } from 'axios';
+import { ErrorResponse } from '@/type/ErrorResponse';
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +11,7 @@ export async function POST(req: NextRequest) {
     const files = data.getAll('images') as File[]; // Note: changed from 'image' to 'images'
 
     if (!files || files.length === 0) {
-      return NextResponse.json({ error: 'No files uploaded' }, { status: 400 });
+      return NextResponse.json({ error: 'Không có file nào được upload' }, { status: 400 });
     }
 
     const imageUrls = await Promise.all(
@@ -25,10 +27,16 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({ imageUrls });
-  } catch (error : any) {
+  } 
+  catch (error: unknown) {
+    const err = error as AxiosError<ErrorResponse>;
     return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
+      { 
+        message: err.response?.data?.message || "Đã có lỗi xảy ra" 
+      },
+      {
+        status: err.response?.status || 500,
+      }
     );
   }
 }

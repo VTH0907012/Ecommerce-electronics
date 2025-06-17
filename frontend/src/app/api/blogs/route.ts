@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import axiosInstance from "../../../utils/axiosConfig";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/type/ErrorResponse";
 
 export async function POST(req: Request) {
   try {
@@ -20,10 +22,16 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(res.data);
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error.response?.data?.message || "Tạo blog thất bại" },
-      { status: error.response?.status || 500 }
-    );
+  } 
+  catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      return NextResponse.json(
+        { 
+          message: err.response?.data?.message || "Tạo blog thất bại" 
+        },
+        {
+          status: err.response?.status || 500,
+        }
+      );
   }
 }

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axiosInstance from "../../../utils/axiosConfig"; // Import axiosInstance của bạn
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/type/ErrorResponse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,11 +36,16 @@ export async function POST(req: NextRequest) {
     response.cookies.set("isAdmin", data.user.isAdmin ? "true" : "false");
 
     return response;
-  } catch (error: unknown) {
-    let message = "Đã có lỗi xảy ra";
-    if (error instanceof Error) {
-      message = error.message;
+  } 
+  catch (error: unknown) {
+  const err = error as AxiosError<ErrorResponse>;
+  return NextResponse.json(
+    { 
+      message: err.response?.data?.message || "Đã có lỗi xảy ra" 
+    },
+    {
+      status: err.response?.status || 500,
     }
-    return NextResponse.json({ message }, { status: 500 });
+    );
   }
 }

@@ -19,6 +19,45 @@ import {
 import { fmt } from "@/utils/fmt";
 
 const Checkout = () => {
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+  });
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      fullName: "",
+      phone: "",
+      address: "",
+    };
+
+    if (!shippingInfo.fullName.trim()) {
+      newErrors.fullName = "Vui lòng nhập họ và tên";
+      isValid = false;
+    } else if (shippingInfo.fullName.trim().length < 3) {
+      newErrors.fullName = "Họ tên phải có ít nhất 3 ký tự";
+      isValid = false;
+    }
+
+    const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+    if (!shippingInfo.phone) {
+      newErrors.phone = "Vui lòng nhập số điện thoại";
+      isValid = false;
+    } else if (!phoneRegex.test(shippingInfo.phone)) {
+      newErrors.phone = "Số điện thoại không hợp lệ";
+      isValid = false;
+    }
+
+    if (!shippingInfo.address.trim()) {
+      newErrors.address = "Vui lòng nhập địa chỉ";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const items = useSelector((state: RootState) => state.cart.items);
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch();
@@ -119,7 +158,9 @@ const Checkout = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!validateForm()) {
+      return;
+    }
     if (!user?._id) {
       toast.error("Vui lòng đăng nhập trước khi thanh toán!");
       return;
@@ -182,8 +223,15 @@ const Checkout = () => {
                       value={shippingInfo.fullName}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      className={`w-full px-4 py-3 border ${
+                        errors.fullName ? "border-red-500" : "border-gray-300"
+                      } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`}
                     />
+                    {errors.fullName && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.fullName}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -196,8 +244,15 @@ const Checkout = () => {
                       onChange={handleChange}
                       required
                       type="tel"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      className={`w-full px-4 py-3 border ${
+                        errors.phone ? "border-red-500" : "border-gray-300"
+                      } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`}
                     />
+                    {errors.phone && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -210,8 +265,15 @@ const Checkout = () => {
                     value={shippingInfo.address}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    className={`w-full px-4 py-3 border ${
+                      errors.address ? "border-red-500" : "border-gray-300"
+                    } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`}
                   />
+                  {errors.address && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.address}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -276,80 +338,84 @@ const Checkout = () => {
                         </p>
                       </div>
                     </label> */}
-<label className="flex flex-col sm:flex-row items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
-  <div className="flex items-start w-full">
-    <input
-      type="radio"
-      name="paymentMethod"
-      value="vnpay"
-      checked={shippingInfo.paymentMethod === "vnpay"}
-      onChange={handleChange}
-      className="mt-1 mr-3"
-    />
-    <div className="flex-1">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="font-medium text-gray-800">
-            Thanh toán qua VNPay
-          </p>
-          <p className="text-sm text-gray-500 mt-1">
-            Thanh toán an toàn qua cổng VNPay (Môi trường sandbox)
-          </p>
-        </div>
-      </div>
+                    <label className="flex flex-col sm:flex-row items-start p-4 border rounded-xl cursor-pointer hover:border-blue-400 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <div className="flex items-start w-full">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="vnpay"
+                          checked={shippingInfo.paymentMethod === "vnpay"}
+                          onChange={handleChange}
+                          className="mt-1 mr-3"
+                        />
+                        <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                              <p className="font-medium text-gray-800">
+                                Thanh toán qua VNPay
+                              </p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Thanh toán an toàn qua cổng VNPay (Môi trường
+                                sandbox)
+                              </p>
+                            </div>
+                          </div>
 
-      <div className="mt-3 bg-gray-50 rounded-lg p-3">
-        <div className="flex flex-col xs:flex-row xs:items-center">
-          <div className="flex items-center mb-2 xs:mb-0">
-            <svg
-              className="w-4 h-4 text-blue-500 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-sm font-medium text-gray-700">
-              Tài liệu test case: {""}
-            </p>
-          </div>
-          <a
-            href="https://sandbox.vnpayment.vn/apis/vnpay-demo/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-            <span className="break-all">https://sandbox.vnpayment.vn/apis/vnpay-demo/</span>
-          </a>
-        </div>
+                          <div className="mt-3 bg-gray-50 rounded-lg p-3">
+                            <div className="flex flex-col xs:flex-row xs:items-center">
+                              <div className="flex items-center mb-2 xs:mb-0">
+                                <svg
+                                  className="w-4 h-4 text-blue-500 mr-2"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                <p className="text-sm font-medium text-gray-700">
+                                  Tài liệu test case: {""}
+                                </p>
+                              </div>
+                              <a
+                                href="https://sandbox.vnpayment.vn/apis/vnpay-demo/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                              >
+                                <svg
+                                  className="w-4 h-4 mr-2"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                  />
+                                </svg>
+                                <span className="break-all">
+                                  https://sandbox.vnpayment.vn/apis/vnpay-demo/
+                                </span>
+                              </a>
+                            </div>
 
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <p className="text-xs text-yellow-600 font-medium">
-            ⚠️ Lưu ý: Đây là cổng thanh toán test, không sử dụng thông tin thật
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</label>
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <p className="text-xs text-yellow-600 font-medium">
+                                ⚠️ Lưu ý: Đây là cổng thanh toán test, không sử
+                                dụng thông tin thật
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
                   </div>
                 </div>
               </form>
@@ -419,7 +485,7 @@ const Checkout = () => {
                   <button
                     onClick={handleSubmit}
                     disabled={items.length === 0}
-                    className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                   >
                     Đặt hàng ngay
                   </button>

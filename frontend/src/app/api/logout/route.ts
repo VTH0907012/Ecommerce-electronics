@@ -1,3 +1,5 @@
+import { ErrorResponse } from "@/type/ErrorResponse";
+import { AxiosError } from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -20,11 +22,16 @@ export async function POST() {
       maxAge: 0,
     });
     return NextResponse.json({ message: "Đăng xuất thành công" });
-  } catch (error: unknown) {
-    let message = "Đã có lỗi xảy ra khi đăng xuất";
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    return NextResponse.json({ message }, { status: 500 });
   }
+    catch (error: unknown) {
+    const err = error as AxiosError<ErrorResponse>;
+    return NextResponse.json(
+      { 
+        message: err.response?.data?.message || "Đã có lỗi xảy ra khi đăng xuất"
+      },
+      {
+        status: err.response?.status || 500,
+      }
+      );
+    }
 }

@@ -97,7 +97,7 @@ const CartSidebar = () => {
                 </div>
                 <button
                   onClick={() => dispatch(removeFromCart(item._id))}
-                  className="p-2 rounded-md bg-gray-100 hover:bg-gray-200"
+                  className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
                 >
                   <FiTrash2 className="w-4 h-4 text-gray-600" />
                 </button>
@@ -122,13 +122,13 @@ const CartSidebar = () => {
                 dispatch(toggleCart());
                 router.push("/cart");
               }}
-              className="flex-1 py-3 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700"
+              className="flex-1 py-3 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700 cursor-pointer"
             >
               Chi tiết giỏ hàng
             </button>
             <button
               onClick={handlePaymentClick}
-              className="flex-1 py-3 rounded-md bg-slate-900 text-white font-medium hover:bg-slate-800"
+              className="flex-1 py-3 rounded-md bg-slate-900 text-white font-medium hover:bg-slate-800 cursor-pointer"
             >
               Thanh Toán
             </button>

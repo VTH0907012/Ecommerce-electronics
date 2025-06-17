@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import axiosInstance from "@/utils/axiosConfig";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/type/ErrorResponse";
 
 export async function PUT(req: Request) {
   try {
@@ -20,11 +22,16 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json(res.data);
-  } catch (error: any) {
-    console.error("Lỗi đổi mật khẩu:", error.message);
+  } 
+  catch (error: unknown) {
+    const err = error as AxiosError<ErrorResponse>;
     return NextResponse.json(
-      { message: error.response?.data?.message || "Đổi mật khẩu thất bại" },
-      { status: 500 }
+    { 
+      message: err.response?.data?.message || "Đổi mật khẩu thất bại" 
+    },
+    {
+      status: err.response?.status || 500,
+    }
     );
   }
 }

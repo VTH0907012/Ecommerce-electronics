@@ -44,21 +44,21 @@ const ProductItem = ({ item }: { item: Product }) => {
           <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200 flex justify-center gap-3 py-2">
             <button
               onClick={() => handleQuickView(item)}
-              className="w-9 h-9 flex items-center justify-center rounded bg-white text-gray-800  hover:text-blue-600"
+              className="w-9 h-9 flex items-center justify-center rounded bg-white text-gray-800  hover:text-blue-600 cursor-pointer"
               aria-label="Quick View"
             >
               <FaEye size={18} />
             </button>
             <button
               onClick={handleAddToCart}
-              className="px-3 py-1 rounded bg-blue-600 text-white text-sm flex items-center gap-1 hover:bg-blue-700"
+              className="px-3 py-1 rounded bg-blue-600 text-white text-sm flex items-center gap-1 hover:bg-blue-700 cursor-pointer"
             >
               <FiShoppingCart size={16} />
               Mua hàng
             </button>
             <button
               onClick={handleAddToWishlist}
-              className="w-9 h-9 flex items-center justify-center rounded bg-white text-gray-800  hover:text-red-500"
+              className="w-9 h-9 flex items-center justify-center rounded bg-white text-gray-800  hover:text-red-500 cursor-pointer"
               aria-label="Wishlist"
             >
               <FaHeart size={16} />

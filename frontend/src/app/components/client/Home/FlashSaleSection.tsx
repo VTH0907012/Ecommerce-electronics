@@ -73,7 +73,6 @@ const FlashSaleSection: React.FC = () => {
               >
                 &lt;
               </button>
-
               <div className="overflow-hidden relative">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -84,12 +83,19 @@ const FlashSaleSection: React.FC = () => {
                     transition={{ duration: 0.4 }}
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
                   >
-                    <div className="block md:hidden">
+                    {/* Mobile: Chỉ hiện 1 sản phẩm */}
+                    <div className="block sm:hidden">
                       <ProductItem item={flashItems[currentIndex]} />
                     </div>
-                    
-                    {flashItems.slice(0, 4).map((item) => (
-                      <div key={item._id} className="hidden md:block">
+
+                    {/* Tablet/Desktop: Hiện tối đa 4 sản phẩm (tùy breakpoint) */}
+                    {flashItems.slice(0, 4).map((item, index) => (
+                      <div
+                        key={item._id}
+                        className={`hidden ${
+                          index < 2 ? "sm:block" : "md:block" // Từ sm hiện 2 sp, từ md hiện 4 sp
+                        }`}
+                      >
                         <ProductItem item={item} />
                       </div>
                     ))}
@@ -106,14 +112,18 @@ const FlashSaleSection: React.FC = () => {
               </button>
 
               <button
-                onClick={() => setCurrentIndex(prev => Math.max(prev - 1, 0))}
+                onClick={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
                 disabled={currentIndex === 0}
                 className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 hidden md:flex items-center justify-center rounded-full z-10 border border-gray-300 bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition duration-300 shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 &lt;
               </button>
               <button
-                onClick={() => setCurrentIndex(prev => Math.min(prev + 1, flashItems.length - 1))}
+                onClick={() =>
+                  setCurrentIndex((prev) =>
+                    Math.min(prev + 1, flashItems.length - 1)
+                  )
+                }
                 disabled={currentIndex >= flashItems.length - 4}
                 className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 hidden md:flex items-center justify-center rounded-full z-10 border border-gray-300 bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition duration-300 shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
               >

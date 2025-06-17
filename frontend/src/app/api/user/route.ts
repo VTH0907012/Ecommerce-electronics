@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import axiosInstance from "../../../utils/axiosConfig"; 
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/type/ErrorResponse";
 
 export async function GET() {
   try {
@@ -47,11 +49,15 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json(updateRes.data);
-  } catch (error: any) {
-    console.error("Cập nhật thông tin lỗi:", error.message);
-    return NextResponse.json(
-      { message: error.response?.data?.message || "Đã xảy ra lỗi khi cập nhật" },
-      { status: 500 }
-    );
-  }
+  }   catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      return NextResponse.json(
+      { 
+        message: err.response?.data?.message || "Đã có lỗi xảy ra khi cập nhật" 
+      },
+      {
+        status: err.response?.status || 500,
+      }
+      );
+    }
 }
