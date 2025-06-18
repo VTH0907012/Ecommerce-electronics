@@ -26,6 +26,7 @@ const ProductSuggestions: React.FC = () => {
           .slice(0, 10);
 
         setTopProducts(filtered);
+        console.log(filtered);
       } catch (error) {
         console.error("Lỗi khi tải sản phẩm:", error);
         setTopProducts([]);
@@ -87,7 +88,6 @@ const ProductSuggestions: React.FC = () => {
               >
                 &lt;
               </button>
-
               <div className="overflow-hidden relative">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -104,16 +104,18 @@ const ProductSuggestions: React.FC = () => {
                     </div>
 
                     {/* Tablet/Desktop: Hiện tối đa 4 sản phẩm (tùy breakpoint) */}
-                    {topProducts.slice(0, 4).map((item, index) => (
-                      <div
-                        key={item._id}
-                        className={`hidden ${
-                          index < 2 ? "sm:block" : "md:block" // Từ sm hiện 2 sp, từ md hiện 4 sp
-                        }`}
-                      >
-                        <ProductItem item={item} />
-                      </div>
-                    ))}
+                    {topProducts
+                      .slice(currentIndex, currentIndex + 4) 
+                      .map((item, index) => (
+                        <div
+                          key={item._id}
+                          className={`hidden ${
+                            index < 2 ? "sm:block" : "md:block" // Từ sm hiện 2 sp, từ md hiện 4 sp
+                          }`}
+                        >
+                          <ProductItem item={item} />
+                        </div>
+                      ))}
                   </motion.div>
                 </AnimatePresence>
               </div>

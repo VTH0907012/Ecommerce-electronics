@@ -89,16 +89,19 @@ const FlashSaleSection: React.FC = () => {
                     </div>
 
                     {/* Tablet/Desktop: Hiện tối đa 4 sản phẩm (tùy breakpoint) */}
-                    {flashItems.slice(0, 4).map((item, index) => (
-                      <div
-                        key={item._id}
-                        className={`hidden ${
-                          index < 2 ? "sm:block" : "md:block" // Từ sm hiện 2 sp, từ md hiện 4 sp
-                        }`}
-                      >
-                        <ProductItem item={item} />
-                      </div>
-                    ))}
+
+                    {flashItems
+                      .slice(currentIndex, currentIndex + 4)
+                      .map((item, index) => (
+                        <div
+                          key={item._id}
+                          className={`hidden ${
+                            index < 2 ? "sm:block" : "md:block" // Từ sm hiện 2 sp, từ md hiện 4 sp
+                          }`}
+                        >
+                          <ProductItem item={item} />
+                        </div>
+                      ))}
                   </motion.div>
                 </AnimatePresence>
               </div>
