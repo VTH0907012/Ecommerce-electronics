@@ -1,4 +1,3 @@
-
 // "use client";
 // import React, { useRef, useCallback, useEffect } from "react";
 // import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,7 +14,7 @@
 
 // const CategorySection: React.FC = () => {
 //   const [categories, setCategories] = React.useState<Category[]>([]);
-//   const [loading, setLoading] = React.useState<boolean>(true); 
+//   const [loading, setLoading] = React.useState<boolean>(true);
 //   const sliderRef = useRef<SwiperCore | null>(null);
 //   const router = useRouter();
 
@@ -91,7 +90,7 @@
 //             >
 //               {categories.map((category) => (
 //                 <SwiperSlide key={category._id}>
-//                   <div 
+//                   <div
 //                     className="flex flex-col items-center space-y-2 cursor-pointer"
 //                     onClick={() => handleCategoryClick(category._id!)}
 //                   >
@@ -111,7 +110,7 @@
 //             </Swiper>
 
 //             <button
-//               className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white p-2 shadow-md rounded-full z-10 cursor-pointer" 
+//               className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white p-2 shadow-md rounded-full z-10 cursor-pointer"
 //               onClick={handlePrev}
 //             >
 //               <IoIosArrowBack />
@@ -142,10 +141,11 @@ import { getAllCategorys } from "@/utils/cateApi";
 import { FaTags } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { CategorySkeleton } from "../Common/SkeletonLoading";
+import Image from "next/image";
 
 const CategorySection: React.FC = () => {
   const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(true); 
+  const [loading, setLoading] = React.useState<boolean>(true);
   const sliderRef = useRef<SwiperCore | null>(null);
   const router = useRouter();
 
@@ -219,15 +219,17 @@ const CategorySection: React.FC = () => {
             >
               {categories.map((category) => (
                 <SwiperSlide key={category._id}>
-                  <div 
+                  <div
                     className="flex flex-col items-center space-y-2 cursor-pointer transition-transform transform hover:scale-105"
                     onClick={() => handleCategoryClick(category._id!)}
                   >
                     <div className="w-24 h-24 rounded-full bg-[#f5f7fc] flex items-center justify-center shadow-md">
-                      <img
+                      <Image
                         src={category.image}
                         alt={category.name}
-                        className="w-12 h-12 object-contain"
+                        width={48}
+                        height={48} 
+                        className="object-contain"
                       />
                     </div>
                     <p className="text-sm font-medium text-[#1e1e1e] text-center">
@@ -239,7 +241,7 @@ const CategorySection: React.FC = () => {
             </Swiper>
 
             <button
-              className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white p-2 shadow-md rounded-full z-10 cursor-pointer transition-transform hover:scale-110" 
+              className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white p-2 shadow-md rounded-full z-10 cursor-pointer transition-transform hover:scale-110"
               onClick={handlePrev}
             >
               <IoIosArrowBack className="text-gray-600" />
