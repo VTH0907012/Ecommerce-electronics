@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({
       message: "Đăng nhập thành công",
       user: data.user,
+      status: 200
     });
 
     response.cookies.set("token", data.token, {

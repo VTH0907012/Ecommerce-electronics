@@ -9,13 +9,12 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   return (
     <ReduxProvider>
       <Navbar />
       <Toaster />
       {children}
-      <CartSidebar /> 
+      <CartSidebar />
       <Footer />
     </ReduxProvider>
   );
@@ -57,7 +56,7 @@ export default function ClientLayout({
 //        <Navbar />
 //        <Toaster />
 //        {children}
-//        <CartSidebar /> 
+//        <CartSidebar />
 //        <Footer />
 //      </ReduxProvider>
 //       </div>

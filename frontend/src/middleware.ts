@@ -1,5 +1,3 @@
-
-
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
@@ -11,7 +9,7 @@ export function middleware(request: NextRequest) {
   const authRoutes = ["/login", "/register"];
   const adminRoutes = ["/admin"];
 
-  if (!token && protectedRoutes.some(route => pathname.startsWith(route))) {
+  if (!token && protectedRoutes.some((route) => pathname.startsWith(route))) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
@@ -20,9 +18,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (adminRoutes.some(route => pathname.startsWith(route)) )
-    
-    {
+  if (adminRoutes.some((route) => pathname.startsWith(route))) {
     if (!token) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
@@ -36,11 +32,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/checkout",
-    "/profile",
-    "/login",
-    "/register",
-    "/admin/:path*"
-  ],
+  matcher: ["/checkout", "/profile", "/login", "/register", "/admin/:path*"],
 };

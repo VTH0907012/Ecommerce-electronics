@@ -1,5 +1,4 @@
 import Carousel from "../components/client/Home/Carousel";
-
 import WhyUs from "../components/client/Home/WhyUs";
 import ProductSuggestions from "../components/client/Home/ProductSuggestions";
 import FlashSaleSection from "../components/client/Home/FlashSaleSection";
