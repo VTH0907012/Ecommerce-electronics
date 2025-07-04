@@ -7,6 +7,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { deleteCategory, getAllCategorys } from "@/utils/cateApi";
 import CategoryFormModal from "./CategoryForm";
 import ConfirmDeleteModal from "../../Confirm";
+import Image from "next/image";
 
 export default function CategoryManager() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -62,8 +63,9 @@ export default function CategoryManager() {
     setShowModal(true);
   };
 
- 
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDelete = async () => {
@@ -78,13 +80,13 @@ export default function CategoryManager() {
     } catch (error: any) {
       toast.error(error.message);
     } finally {
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
   const confirmDelete = (cate: Category) => {
     setCategoryToDelete(cate);
-    setShowDeleteModal(true); 
+    setShowDeleteModal(true);
   };
   return (
     <div className="p-4 sm:p-6">
@@ -224,10 +226,12 @@ export default function CategoryManager() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {cat.image ? (
-                          <img
+                          <Image
                             src={cat.image}
                             alt={cat.name}
-                            className="h-10 w-10 object-contain rounded-full"
+                            width={40} // h-10 = 40px
+                            height={40}
+                            className="object-contain rounded-full"
                           />
                         ) : (
                           <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
@@ -345,7 +349,7 @@ export default function CategoryManager() {
           }}
         />
       )}
-       <ConfirmDeleteModal
+      <ConfirmDeleteModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}

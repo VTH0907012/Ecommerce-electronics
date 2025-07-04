@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const carouselImages = [
@@ -14,7 +15,7 @@ const Carousel = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % length);
-    }, 3000); 
+    }, 3000);
     return () => clearInterval(interval);
   }, [length]);
 
@@ -32,10 +33,11 @@ const Carousel = () => {
               index === current ? "opacity-100 z-10" : "opacity-0 z-0"
             }`}
           >
-            <img
+            <Image
               src={src}
-              className="w-full h-full object-cover"
               alt={`Slide ${index + 1}`}
+              fill
+              className="object-cover"
             />
           </div>
         ))}

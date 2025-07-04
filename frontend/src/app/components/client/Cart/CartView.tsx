@@ -84,10 +84,8 @@ const ViewCart = () => {
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Cart Items */}
             <div className="lg:w-2/3">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden ">
-                {/* Table Header */}
                 <div className="hidden md:grid grid-cols-12 bg-gray-50 px-6 py-3 border-b text-sm font-medium text-gray-500 uppercase">
                   <div className="col-span-5">Sản phẩm</div>
                   <div className="col-span-3 text-center">Đơn giá</div>
@@ -95,7 +93,6 @@ const ViewCart = () => {
                   <div className="col-span-2 text-right">Thành tiền</div>
                 </div>
 
-                {/* Cart Items */}
                 {items.map((item) => {
                   const hasDiscount = item.discountPrice && item.discountPrice < item.price;
                   const itemTotal = (item.discountPrice ?? item.price) * item.quantity;
@@ -106,7 +103,6 @@ const ViewCart = () => {
                       key={item._id}
                       className="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 border-b last:border-b-0"
                     >
-                      {/* Product Info */}
                       <div className="md:col-span-5 flex items-start gap-4">
                         <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
                           <Image
@@ -136,7 +132,6 @@ const ViewCart = () => {
                         </div>
                       </div>
 
-                      {/* Price */}
                       <div className="md:col-span-3 flex flex-col items-center">
                         {hasDiscount ? (
                           <>
@@ -154,7 +149,6 @@ const ViewCart = () => {
                         )}
                       </div>
 
-                      {/* Quantity */}
                       <div className="md:col-span-2 flex md:block items-center mt-2">
                         <div className="flex border rounded-md w-fit mx-auto">
                           <button
@@ -179,7 +173,6 @@ const ViewCart = () => {
                         </div>
                       </div>
 
-                      {/* Total */}
                       <div className="md:col-span-2 flex flex-col items-end">
                         {hasDiscount && (
                           <span className="text-gray-500 line-through text-sm">
@@ -195,7 +188,6 @@ const ViewCart = () => {
                 })}
               </div>
 
-              {/* Continue Shopping */}
               <div className="mt-4">
                 <Link
                   href="/products"
@@ -207,14 +199,12 @@ const ViewCart = () => {
               </div>
             </div>
 
-            {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">
                   Tóm tắt đơn hàng
                 </h2>
 
-                {/* Summary Details */}
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tổng giá gốc</span>
@@ -240,7 +230,6 @@ const ViewCart = () => {
                   )}
                 </div>
 
-                {/* Checkout Button */}
                 <button
                   onClick={handleCheckout}
                   className="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium cursor-pointer"

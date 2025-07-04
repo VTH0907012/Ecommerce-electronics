@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/type/ErrorResponse';
 export async function POST(req: NextRequest) {
   try {
     const data = await req.formData();
-    const files = data.getAll('images') as File[]; // Note: changed from 'image' to 'images'
+    const files = data.getAll('images') as File[];
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'Không có file nào được upload' }, { status: 400 });

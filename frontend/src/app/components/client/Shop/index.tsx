@@ -25,7 +25,7 @@ const Shop = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
+  const productsPerPage = 9;
 
   // Get category from URL
   const searchParams = useSearchParams();

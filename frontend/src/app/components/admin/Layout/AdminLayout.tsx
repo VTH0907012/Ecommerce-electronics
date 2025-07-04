@@ -1,4 +1,3 @@
-
 "use client";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
@@ -10,6 +9,8 @@ import {
   FiFileText,
   FiUser,
   FiX,
+  FiMessageCircle,
+  FiBookOpen,
 } from "react-icons/fi";
 import AdminNavbar from "./AdminNavbar";
 
@@ -62,8 +63,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <NavLink href="/admin/orders" icon={<FiFileText />}>
               Hoá đơn
             </NavLink>
-            <NavLink href="/admin/blogs" icon={<FiFileText />}>
+            <NavLink href="/admin/blogs" icon={<FiBookOpen />}>
               Blog
+            </NavLink>
+            <NavLink href="/admin/comments" icon={<FiMessageCircle />}>
+              Bình luận
             </NavLink>
             <NavLink href="/admin/users" icon={<FiUser />}>
               Người dùng

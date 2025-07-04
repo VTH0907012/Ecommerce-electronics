@@ -7,6 +7,7 @@ import { RootState } from "@/redux";
 import { removeFromCart, toggleCart } from "@/redux/cartSlice";
 import { useRouter } from "next/navigation";
 import { fmt } from "@/utils/fmt";
+import Image from "next/image";
 
 const CartSidebar = () => {
   const dispatch = useDispatch();
@@ -64,10 +65,13 @@ const CartSidebar = () => {
               <div key={item._id} className="flex items-center justify-between">
                 <div className="flex gap-4">
                   <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden">
-                    <img
-                      src={item.image}
+                    <Image
+                      src={item.image!}
                       alt={item.name}
+                      width={500}
+                      height={300}
                       className="w-full h-full object-cover"
+                      unoptimized
                     />
                   </div>
                   <div className="flex flex-col">

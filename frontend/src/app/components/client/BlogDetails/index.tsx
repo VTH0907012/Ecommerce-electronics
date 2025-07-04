@@ -5,6 +5,7 @@ import { getBlogById } from "@/utils/blogApi";
 import { BlogItem } from "@/type/BlogItem";
 import Link from "next/link";
 import { FiArrowLeft, FiCalendar, FiClock } from "react-icons/fi";
+import Image from "next/image";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -103,10 +104,18 @@ const BlogDetails = () => {
         </h1>
 
         <div className="relative rounded-xl overflow-hidden mb-10 shadow-lg">
-          <img
+          {/* <img
             src={blog.image}
             alt={blog.title}
             className="w-full h-auto max-h-[500px] object-cover"
+          /> */}
+          <Image
+            src={blog.image}
+            alt={blog.title}
+            width={800} 
+            height={500}
+            className="w-full h-auto max-h-[500px] object-cover"
+            unoptimized 
           />
         </div>
 
@@ -115,8 +124,6 @@ const BlogDetails = () => {
             className="text-gray-700 leading-relaxed whitespace-pre-line"
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
-
-         
         </article>
 
         <button

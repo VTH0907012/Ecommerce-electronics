@@ -57,3 +57,25 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// Lấy sản phẩm liên quan cùng danh mục
+exports.getRelatedProducts = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+
+    const relatedProducts = await Product.find({
+      category: product.category,
+      _id: { $ne: productId }, // Loại trừ chính nó
+    })
+      .limit(8);
+
+    res.status(200).json(relatedProducts);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm liên quan:", error);
+    res.status(500).json({ message: 'Lỗi khi lấy sản phẩm liên quan', error });
+  }
+};

@@ -8,6 +8,7 @@ import { Product } from "@/type/Product";
 import { deleteProduct, getAllProducts } from "@/utils/productApi";
 import ProductForm from "./ProductForm";
 import ConfirmDeleteModal from "../../Confirm";
+import Image from "next/image";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -62,13 +63,13 @@ export default function ProductManager() {
     } catch (error: any) {
       toast.error(error.message);
     } finally {
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
   const confirmDelete = (pro: Product) => {
     setProductToDelete(pro);
-    setShowDeleteModal(true); 
+    setShowDeleteModal(true);
   };
 
   const filteredProducts = products.filter((p) =>
@@ -191,10 +192,12 @@ export default function ProductManager() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                       {p.images && (
-                        <img
+                        <Image
                           src={p.images[0]}
                           alt={p.name}
-                          className="h-16 w-16 object-contain"
+                          width={64} // h-16 = 64px
+                          height={64}
+                          className="object-contain"
                         />
                       )}
                     </td>

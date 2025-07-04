@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { unlink } from 'fs/promises'; // fs.promises để xóa file
+import { unlink } from 'fs/promises'; 
 import path from 'path';
 import { AxiosError } from 'axios';
 import { ErrorResponse } from '@/type/ErrorResponse';
 
 export async function POST(req: NextRequest) {
-  const { imagePath } = await req.json(); // nhận đường dẫn ảnh cũ từ client
+  const { imagePath } = await req.json(); 
 
   try {
-    const fullPath = path.join(process.cwd(), imagePath); // tạo đường dẫn đầy đủ
-    await unlink(fullPath); // xóa ảnh
+    const fullPath = path.join(process.cwd(), imagePath); 
+    await unlink(fullPath); 
     return NextResponse.json({ message: 'Xoá hình ảnh thành công' });
   } 
   catch (error: unknown) {

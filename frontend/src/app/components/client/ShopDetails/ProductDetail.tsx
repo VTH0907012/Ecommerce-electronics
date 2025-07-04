@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/type/Product";
@@ -8,30 +7,42 @@ import { fmt } from "@/utils/fmt";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux";
 import { addToCart } from "@/redux/cartSlice";
-import { getProductById } from "@/utils/productApi";
+import { getProductById, getRelatedProducts } from "@/utils/productApi";
 import { useParams } from "next/navigation";
-import ProductDetailSkeleton from "./ProductDetailSkeleton"; // Make sure this path is correct
+import ProductDetailSkeleton from "./ProductDetailSkeleton";
 import Breadcrumb from "./Breadcrumb";
+import { motion } from "framer-motion";
+import ProductItem from "../Shop/ProductItem";
+import CommentSection from "./CommentSection";
 
 const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loadingRelated, setLoadingRelated] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getProductById(id as string);
-        setProduct(data);
+        setLoading(true);
+        const productData = await getProductById(id as string);
+        setProduct(productData);
+
+        // Fetch related products
+        setLoadingRelated(true);
+        const related = await getRelatedProducts(id as string);
+        setRelatedProducts(related);
       } catch (error) {
-        console.error("Failed to fetch product", error);
+        console.error("Failed to fetch data", error);
       } finally {
         setLoading(false);
+        setLoadingRelated(false);
       }
     };
 
     if (id) {
-      fetchProduct();
+      fetchData();
     }
   }, [id]);
 
@@ -56,7 +67,6 @@ const ProductDetail = () => {
 
   return (
     <>
-      {" "}
       <Breadcrumb
         categoryName={(product?.category as any)?.name}
         productName={product?.name}
@@ -285,6 +295,52 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      <hr className="mt-16 border-gray-300" />
+
+      <CommentSection productId={id as string} />
+
+      {/* Phần sản phẩm liên quan */}
+      <hr className="mt-16 border-gray-300" />
+      <section className="py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">
+            Sản phẩm liên quan
+          </h2>
+
+          {loadingRelated ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 gap-6">
+              {[...Array(5)].map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-sm p-4 h-full"
+                >
+                  <div className="animate-pulse">
+                    <div className="bg-gray-200 h-40 rounded-md mb-3"></div>
+                    <div className="bg-gray-200 h-4 rounded mb-2"></div>
+                    <div className="bg-gray-200 h-4 rounded w-3/4 mb-3"></div>
+                    <div className="bg-gray-200 h-4 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : relatedProducts.length > 0 ? (
+            <motion.div
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {relatedProducts.map((product) => (
+                <ProductItem key={product._id} item={product} />
+              ))}
+            </motion.div>
+          ) : (
+            <div className="text-center py-10 text-gray-500">
+              Hiện không có sản phẩm liên quan
+            </div>
+          )}
+        </div>
+      </section>
     </>
   );
 };

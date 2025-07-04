@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 
 const bodyParser = require('body-parser');// Thêm
@@ -29,6 +30,7 @@ app.use("/api/products", productRoutes);
 app.use('/api/', authRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/comments', commentRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

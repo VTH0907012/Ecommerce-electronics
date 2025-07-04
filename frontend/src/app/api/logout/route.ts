@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     const cookieStore = await cookies();
-   // Xóa isAdmin cookie
 
     cookieStore.set("token", "", {
       httpOnly: true,

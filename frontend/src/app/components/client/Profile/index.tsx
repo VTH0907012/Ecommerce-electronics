@@ -144,7 +144,7 @@ const Profile = () => {
     try {
       await cancelOrder(orderToDelete._id!);
 
-      toast.success("huỷ đơn hàng thành công thành công");
+      toast.success("huỷ đơn hàng  thành công");
       await fetchOrders();
     } catch (error: any) {
       toast.error(error.message);

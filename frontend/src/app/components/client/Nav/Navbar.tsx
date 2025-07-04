@@ -12,6 +12,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { Product } from "@/type/Product";
 import { getAllProducts } from "@/utils/productApi";
 import { fmt } from "@/utils/fmt";
+import Image from "next/image";
 
 const Navbar = () => {
   const router = useRouter();
@@ -108,7 +109,7 @@ const Navbar = () => {
         .filter((product) =>
           product.name.toLowerCase().includes(query.toLowerCase())
         )
-        .slice(0, 5); 
+        .slice(0, 5);
       setSearchResults(filtered);
       setShowSuggestions(true);
     } else {
@@ -154,7 +155,13 @@ const Navbar = () => {
             }`}
           >
             <Link href="/" className="flex items-center shrink-0">
-              <img src="/logo/logo.png" alt="Logo" className="h-10 w-auto" />
+              <Image
+                src="/logo/logo.png"
+                alt="Logo"
+                width={100}
+                height={40}
+                className="w-auto h-10"
+              />{" "}
               <span className="ml-2 text-2xl font-bold text-blue-600 hidden sm:block">
                 A$HOP
               </span>
@@ -196,10 +203,13 @@ const Navbar = () => {
                           }
                         >
                           {product.images && product.images.length > 0 && (
-                            <img
+                            <Image
                               src={product.images[0]}
                               alt={product.name}
-                              className="w-8 h-8 object-cover mr-3 rounded"
+                              width={32}
+                              height={32}
+                              className="object-cover mr-3 rounded"
+                              unoptimized
                             />
                           )}
                           <div>
@@ -360,16 +370,17 @@ const Navbar = () => {
                           }
                         >
                           {product.images && product.images.length > 0 && (
-                            <img
-                              src={product.images[0]}
-                              alt={product.name}
-                              className="w-8 h-8 object-cover mr-3 rounded"
-                            />
+<Image
+  src={product.images[0]}
+  alt={product.name}
+  width={32} 
+  height={32} 
+  className="object-cover mr-3 rounded"
+/>
                           )}
                           <div>
                             <div className="font-medium">{product.name}</div>
                             <div className="text-sm text-gray-600">
-
                               {fmt(product.price)}
 
                               {product.discountPrice && (

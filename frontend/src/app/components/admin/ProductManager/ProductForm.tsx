@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +7,7 @@ import { getAllBrands } from "@/utils/brandApi";
 import toast from "react-hot-toast";
 import { Product } from "@/type/Product";
 import { deleteOldImage } from "@/utils/deleteOldImage";
+import Image from "next/image";
 
 type Category = { _id: string; name: string };
 type Brand = { _id: string; name: string };
@@ -302,10 +302,12 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
             <div className="mt-2 flex gap-2 flex-wrap">
               {previewImages.map((src, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <Image
                     src={src}
                     alt={`preview-${index}`}
-                    className="h-24 w-24 object-cover rounded-md border"
+                    width={96} // h-24 = 96px
+                    height={96}
+                    className="object-cover rounded-md border"
                   />
                 </div>
               ))}

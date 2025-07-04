@@ -9,6 +9,7 @@ import {
   FiChevronRight,
   FiClock,
 } from "react-icons/fi";
+import Image from "next/image";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -73,13 +74,16 @@ const Blogs = () => {
           Khám phá những bài viết mới nhất và thông tin hữu ích từ chúng tôi
         </p>
       </div> */}
-            <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4"> Tin Tức & Bài Viết</h1>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          {" "}
+          Tin Tức & Bài Viết
+        </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Khám phá những bài viết mới nhất và thông tin hữu ích từ chúng tôi
         </p>
       </div>
-<hr className="max-w-md mx-auto my-8 border-t-2 border-gray-300 rounded-full shadow-sm" />
+      <hr className="max-w-md mx-auto my-8 border-t-2 border-gray-300 rounded-full shadow-sm" />
 
       <div className="max-w-7xl mx-auto">
         {/* Loading State */}
@@ -113,17 +117,23 @@ const Blogs = () => {
                   className="group"
                 >
                   <div className="h-full bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300 flex flex-col">
-                    {/* Blog Image */}
                     <div className="relative overflow-hidden h-56">
-                      <img
+                      {/* <img
                         src={blog.image}
                         alt={blog.title}
                         className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                      /> */}
+                      <Image
+                        src={blog.image}
+                        alt={blog.title}
+                        width={500} 
+                        height={300}
+                        className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                        unoptimized
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     </div>
 
-                    {/* Blog Content */}
                     <div className="p-6 flex flex-col flex-1">
                       <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition">
                         {blog.title}
@@ -132,7 +142,6 @@ const Blogs = () => {
                         {blog.content.slice(0, 150)}...
                       </p>
 
-                      {/* Meta Info */}
                       <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-3 border-t border-gray-100">
                         <div className="flex items-center">
                           <FiCalendar className="mr-1.5" />
@@ -151,7 +160,6 @@ const Blogs = () => {
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="text-sm text-gray-500">
@@ -206,7 +214,6 @@ const Blogs = () => {
           </>
         )}
 
-        {/* Empty State */}
         {!loading && blogs.length === 0 && (
           <div className="text-center py-16">
             <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">

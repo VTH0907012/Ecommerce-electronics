@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useState } from "react";
 import { getAllBrands, deleteBrand } from "@/utils/brandApi";
@@ -8,6 +7,7 @@ import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import BrandForm from "./BrandForm";
 import ConfirmDeleteModal from "../../Confirm";
+import Image from "next/image";
 
 export default function BrandManager() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -56,10 +56,10 @@ export default function BrandManager() {
     setShowModal(true);
   };
 
-    const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-  
- const handleDelete = async () => {
+  const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDelete = async () => {
     if (!brandToDelete) return;
     try {
       await deleteBrand(brandToDelete._id!);
@@ -71,7 +71,7 @@ export default function BrandManager() {
     } catch (error: any) {
       toast.error(error.message);
     } finally {
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
@@ -189,10 +189,12 @@ export default function BrandManager() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {brand.image ? (
-                          <img
+                          <Image
                             src={brand.image}
                             alt={brand.name}
-                            className="h-10 w-10 object-contain rounded-full"
+                            width={40}
+                            height={40}
+                            className="object-contain rounded-full"
                           />
                         ) : (
                           <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">

@@ -17,6 +17,7 @@ import {
   FiDollarSign,
 } from "react-icons/fi";
 import { fmt } from "@/utils/fmt";
+import Image from "next/image";
 
 const Checkout = () => {
   const [errors, setErrors] = useState({
@@ -134,7 +135,7 @@ const Checkout = () => {
         total,
       });
 
-      console.log("Full API response:", response); // Debug toàn bộ response
+      //console.log("Full API response:", response);
 
       // 2. Kiểm tra cấu trúc response
       if (!response?.order?._id) {
@@ -185,7 +186,6 @@ const Checkout = () => {
       console.log(data);
       //toast.success("Đặt hàng thành công!");
       dispatch(clearCart());
-
       router.push(`/order-success/${data.order._id}`);
     } catch (error: any) {
       toast.error(error.message || "Có lỗi xảy ra khi đặt hàng");
@@ -442,10 +442,13 @@ const Checkout = () => {
                         className="flex gap-4 items-start pb-4 border-b border-gray-100"
                       >
                         <div className="relative">
-                          <img
-                            src={item.image}
+                          <Image
+                            src={item.image!}
                             alt={item.name}
-                            className="w-16 h-16 object-contain rounded-lg border"
+                            width={64}
+                            height={64}
+                            className="object-contain rounded-lg border"
+                            unoptimized
                           />
                           <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center mt-2">
                             {item.quantity}

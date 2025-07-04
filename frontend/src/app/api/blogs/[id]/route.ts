@@ -15,7 +15,7 @@ export async function PUT(req: Request) {
     }
 
     const url = new URL(req.url);
-    const id = url.pathname.split("/").pop(); // or use a regex if you prefer
+    const id = url.pathname.split("/").pop(); 
 
     const body = await req.json();
 
