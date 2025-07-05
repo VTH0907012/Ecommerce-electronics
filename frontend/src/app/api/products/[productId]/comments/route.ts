@@ -4,8 +4,10 @@ import axiosInstance from "../../../../../utils/axiosConfig";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { productId: string } }
+  context: { params: Promise<{ productId: string }> }
 ) {
+  const { productId } = await context.params;
+
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -16,7 +18,7 @@ export async function POST(
   try {
     const body = await req.json();
     const res = await axiosInstance.post(
-      `/api/comments/${params.productId}`,
+      `/api/comments/${productId}`,
       body,
       {
         headers: { Authorization: `Bearer ${token}` },
