@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import toast from "react-hot-toast";
 import ConfirmDeleteModal from "../../Confirm";
+import Link from "next/link";
 
 interface CommentSectionProps {
   productId: string;
@@ -306,9 +307,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ productId }) => {
             <p className="text-gray-500 mb-4">
               Vui lòng đăng nhập để chia sẻ đánh giá của bạn về sản phẩm
             </p>
-            <button className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-              Đăng nhập ngay
-            </button>
+            <Link href="/login">
+              <button className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer">
+                Đăng nhập ngay
+              </button>
+            </Link>
           </div>
         )}
       </div>
