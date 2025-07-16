@@ -29,21 +29,18 @@ const CartSidebar = () => {
 
   return (
     <>
-      {/* Overlay mờ */}
       {isOpen && (
         <div
-          className={`fixed inset-0 bg-[rgba(0,0,0,0.3)] z-50`} // z-50 để cao hơn navbar
+          className={`fixed inset-0 bg-[rgba(0,0,0,0.3)] z-50`} 
           onClick={() => dispatch(toggleCart())}
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={`fixed top-0 right-0 w-96 h-full bg-white shadow-xl z-50 transition-transform duration-300 transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Header */}
         <div className="flex justify-between items-center px-6 py-5 border-b">
           <h2 className="text-2xl font-bold text-slate-800">Giỏ hàng</h2>
           <button
@@ -54,7 +51,6 @@ const CartSidebar = () => {
           </button>
         </div>
 
-        {/* Items */}
         <div className="px-6 py-4 overflow-y-auto h-[calc(100%-210px)] space-y-4">
           {items.length === 0 ? (
             <p className="text-center text-gray-500 italic mt-10">

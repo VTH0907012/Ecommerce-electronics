@@ -18,7 +18,7 @@ const ProductItem = ({ item }: { item: Product }) => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addToCart({ ...item, quantity: 1 }));
+    dispatch(addToCart({ ...item, quantityToBuy: 1 }));
   };
 
   const handleAddToWishlist = () => {};

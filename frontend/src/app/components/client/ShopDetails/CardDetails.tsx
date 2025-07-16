@@ -21,7 +21,7 @@ const CardDetails: React.FC<ShopDetailsProps> = ({ product, onClose }) => {
     dispatch(
       addToCart({
         ...product,
-        quantity,
+        quantityToBuy : quantity,
       })
     );
     onClose();

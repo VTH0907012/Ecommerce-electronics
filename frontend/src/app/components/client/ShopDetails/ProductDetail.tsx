@@ -58,7 +58,7 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = (item: Product) => {
-    dispatch(addToCart({ ...item, quantity: quantity }));
+    dispatch(addToCart({ ...item, quantityToBuy: quantity }));
   };
 
   if (loading || !product) {

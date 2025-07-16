@@ -16,26 +16,33 @@ const ViewCart = () => {
   const user = useSelector((state: RootState) => state.user.user);
 
   // Tính toán các giá trị tổng
-  const {
-    totalOriginal,
-    totalDiscount,
-    totalFinal
-  } = items.reduce((acc, item) => {
-    const originalPrice = item.price * item.quantity;
-    const discountPrice = item.discountPrice 
-      ? (item.price - item.discountPrice) * item.quantity 
-      : 0;
-    
-    return {
-      totalOriginal: acc.totalOriginal + originalPrice,
-      totalDiscount: acc.totalDiscount + discountPrice,
-      totalFinal: acc.totalFinal + (item.discountPrice ?? item.price) * item.quantity
-    };
-  }, { totalOriginal: 0, totalDiscount: 0, totalFinal: 0 });
+  const { totalOriginal, totalDiscount, totalFinal } = items.reduce(
+    (acc, item) => {
+      const originalPrice = item.price * item.quantity;
+      const discountPrice = item.discountPrice
+        ? (item.price - item.discountPrice) * item.quantity
+        : 0;
+
+      return {
+        totalOriginal: acc.totalOriginal + originalPrice,
+        totalDiscount: acc.totalDiscount + discountPrice,
+        totalFinal:
+          acc.totalFinal + (item.discountPrice ?? item.price) * item.quantity,
+      };
+    },
+    { totalOriginal: 0, totalDiscount: 0, totalFinal: 0 }
+  );
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    dispatch(updateQuantity({ id, quantity: newQuantity }));
+
+
+    const item = items.find((item) => item._id === id);
+    if (item?.quantityInStock && newQuantity > item.quantityInStock) {
+      return;
+    }
+
+    dispatch(updateQuantity({ id, quantityToBuy: newQuantity }));
   };
 
   const handleCheckout = () => {
@@ -94,10 +101,12 @@ const ViewCart = () => {
                 </div>
 
                 {items.map((item) => {
-                  const hasDiscount = item.discountPrice && item.discountPrice < item.price;
-                  const itemTotal = (item.discountPrice ?? item.price) * item.quantity;
+                  const hasDiscount =
+                    item.discountPrice && item.discountPrice < item.price;
+                  const itemTotal =
+                    (item.discountPrice ?? item.price) * item.quantity;
                   const itemOriginalTotal = item.price * item.quantity;
-                  
+
                   return (
                     <div
                       key={item._id}
@@ -210,19 +219,19 @@ const ViewCart = () => {
                     <span className="text-gray-600">Tổng giá gốc</span>
                     <span>{fmt(totalOriginal)}</span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600">Giảm giá sản phẩm</span>
                     <span className="text-red-500">-{fmt(totalDiscount)}</span>
                   </div>
-                  
+
                   <div className="border-t pt-3"></div>
-                  
+
                   <div className="flex justify-between text-lg font-bold">
                     <span>Tổng thanh toán</span>
                     <span className="text-indigo-600">{fmt(totalFinal)}</span>
                   </div>
-                  
+
                   {totalDiscount > 0 && (
                     <div className="text-sm text-green-600 text-right">
                       Bạn đã tiết kiệm được {fmt(totalDiscount)}
