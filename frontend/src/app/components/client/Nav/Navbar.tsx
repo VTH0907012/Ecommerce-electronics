@@ -10,9 +10,9 @@ import { logout } from "../../../../redux/userSlice";
 import { toggleCart } from "@/redux/cartSlice";
 import { FaChevronDown } from "react-icons/fa";
 import { Product } from "@/type/Product";
-import { getAllProducts } from "@/utils/productApi";
 import { fmt } from "@/utils/fmt";
 import Image from "next/image";
+import { useFetchProducts } from "@/services/useFetchProduct";
 
 const Navbar = () => {
   const router = useRouter();
@@ -26,24 +26,26 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
   const searchRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true);
-        const products = await getAllProducts();
-        setAllProducts(products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
+const { products: allProducts = [], isLoading } = useFetchProducts();
+  // const [allProducts, setAllProducts] = useState<Product[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // useEffect(() => {
+  //   const fetchProducts = async () => { 
+  //     try {
+  //       setIsLoading(true);
+  //       const products = await getAllProducts();
+  //       setAllProducts(products);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -370,13 +372,13 @@ const Navbar = () => {
                           }
                         >
                           {product.images && product.images.length > 0 && (
-<Image
-  src={product.images[0]}
-  alt={product.name}
-  width={32} 
-  height={32} 
-  className="object-cover mr-3 rounded"
-/>
+                            <Image
+                              src={product.images[0]}
+                              alt={product.name}
+                              width={32}
+                              height={32}
+                              className="object-cover mr-3 rounded"
+                            />
                           )}
                           <div>
                             <div className="font-medium">{product.name}</div>

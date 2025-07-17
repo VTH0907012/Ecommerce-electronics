@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getAllBrands, deleteBrand } from "@/utils/brandApi";
+import {  useState } from "react";
+import {  deleteBrand } from "@/utils/brandApi";
 import { Brand } from "@/type/Brand";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
@@ -8,13 +8,31 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import BrandForm from "./BrandForm";
 import ConfirmDeleteModal from "../../Confirm";
 import Image from "next/image";
+import useFetchBrands from "@/services/useFetchBrands";
 
 export default function BrandManager() {
-  const [brands, setBrands] = useState<Brand[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
+
+  const {brands = [], isLoading, mutate} = useFetchBrands();
+  
+  // const [brands, setBrands] = useState<Brand[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const fetchBrands = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllBrands();
+  //     setBrands(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchBrands();
+  // }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -29,22 +47,6 @@ export default function BrandManager() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentBrands = filteredBrands.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredBrands.length / itemsPerPage);
-
-  const fetchBrands = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllBrands();
-      setBrands(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBrands();
-  }, []);
 
   const handleAdd = () => {
     setSelectedBrand(null);
@@ -67,7 +69,7 @@ export default function BrandManager() {
         await deleteOldImage(brandToDelete.image);
       }
       toast.success("Xóa blogs thành công");
-      fetchBrands();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -308,7 +310,7 @@ export default function BrandManager() {
           brand={selectedBrand}
           onSuccess={() => {
             setShowModal(false);
-            fetchBrands();
+            mutate();
             setCurrentPage(1);
           }}
         />

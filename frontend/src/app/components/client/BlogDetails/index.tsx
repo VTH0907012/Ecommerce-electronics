@@ -1,29 +1,31 @@
 "use client";
-import { useEffect, useState } from "react";
+import {  } from "react";
 import { useParams } from "next/navigation";
-import { getBlogById } from "@/utils/blogApi";
-import { BlogItem } from "@/type/BlogItem";
+
 import Link from "next/link";
 import { FiArrowLeft, FiCalendar, FiClock } from "react-icons/fi";
 import Image from "next/image";
+import { useFetchBlogById } from "@/services/useFetchBlogs";
 
 const BlogDetails = () => {
   const { id } = useParams();
-  const [blog, setBlog] = useState<BlogItem | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      setLoading(true);
-      getBlogById(id as string)
-        .then((data) => {
-          setBlog(data);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [id]);
+  // const [blog, setBlog] = useState<BlogItem | null>(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // useEffect(() => {
+  //   if (id) {
+  //     setIsLoading(true);
+  //     getBlogById(id as string)
+  //       .then((data) => {
+  //         setBlog(data);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   }
+  // }, [id]);
+const { blog, isLoading } = useFetchBlogById(id as string);
+
 
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200;
@@ -31,7 +33,7 @@ const BlogDetails = () => {
     return Math.ceil(wordCount / wordsPerMinute);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

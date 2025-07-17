@@ -1,42 +1,45 @@
 "use client";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { fmt } from "@/utils/fmt";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Product } from "@/type/Product";
-import { deleteProduct, getAllProducts } from "@/utils/productApi";
+import { deleteProduct } from "@/utils/productApi";
 import ProductForm from "./ProductForm";
 import ConfirmDeleteModal from "../../Confirm";
 import Image from "next/image";
+import { useFetchProducts } from "@/services/useFetchProduct";
 
 const ITEMS_PER_PAGE = 4;
 
 export default function ProductManager() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const indexOfFirstItem = (page - 1) * ITEMS_PER_PAGE;
   const indexOfLastItem = indexOfFirstItem + ITEMS_PER_PAGE;
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const data = await getAllProducts();
-      setProducts(data);
-    } catch (error: any) {
-      toast.error(error.message);
-      // toast.error("Lỗi khi tải sản phẩm");
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const { products = [], isLoading, mutate} = useFetchProducts();
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const fetchProducts = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const data = await getAllProducts();
+  //     setProducts(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
 
   const handleAdd = () => {
     setEditProduct(null);
@@ -59,7 +62,7 @@ export default function ProductManager() {
         await deleteOldImage(productToDelete.images);
       }
       toast.success("Xóa sản phẩm thành công");
-      fetchProducts();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -168,7 +171,7 @@ export default function ProductManager() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {loading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={8} className="text-center py-6">
                     <span className="text-gray-500">Đang tải sản phẩm...</span>
@@ -297,7 +300,7 @@ export default function ProductManager() {
         <ProductForm
           product={editProduct}
           onClose={() => setShowModal(false)}
-          onSuccess={fetchProducts}
+          onSuccess={mutate}
         />
       )}
       <ConfirmDeleteModal

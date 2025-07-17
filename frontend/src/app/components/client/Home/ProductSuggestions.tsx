@@ -105,7 +105,7 @@
 
 //                     {/* Tablet/Desktop: Hiện tối đa 4 sản phẩm (tùy breakpoint) */}
 //                     {topProducts
-//                       .slice(currentIndex, currentIndex + 4) 
+//                       .slice(currentIndex, currentIndex + 4)
 //                       .map((item, index) => (
 //                         <div
 //                           key={item._id}
@@ -157,9 +157,8 @@
 // export default ProductSuggestions;
 
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {  useRef, useCallback } from "react";
 import { Product } from "@/type/Product";
-import { getAllProducts } from "@/utils/productApi";
 import ProductItem from "../Shop/ProductItem";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -169,33 +168,38 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperCore } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
+import { useFetchProducts } from "@/services/useFetchProduct";
 
 const ProductSuggestions: React.FC = () => {
-  const [topProducts, setTopProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const sliderRef = useRef<SwiperCore | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const products = await getAllProducts();
-        const filtered = products
-          .filter((p: Product) => p.rating! > 0)
-          .sort((a: any, b:any) => b.rating! - a.rating!)
-          .slice(0, 10);
-        setTopProducts(filtered);
-      } catch (error) {
-        console.error("Lỗi khi tải sản phẩm:", error);
-        setTopProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const { products = [], isLoading } = useFetchProducts();
+  const topProducts = products
+    .filter((p: Product) => p.rating! > 0)
+    .sort((a: any, b: any) => b.rating! - a.rating!)
+    .slice(0, 6);
+  // const [topProducts, setTopProducts] = useState<Product[]>([]);
+  // const [isLoading, setIsLoading] = useState(true);
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const products = await getAllProducts();
+  //       const filtered = products
+  //         .filter((p: Product) => p.rating! > 0)
+  //         .sort((a: any, b:any) => b.rating! - a.rating!)
+  //         .slice(0, 10);
+  //       setTopProducts(filtered);
+  //     } catch (error) {
+  //       console.error("Lỗi khi tải sản phẩm:", error);
+  //       setTopProducts([]);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
   const handlePrev = useCallback(() => {
     sliderRef.current?.slidePrev();
@@ -220,7 +224,7 @@ const ProductSuggestions: React.FC = () => {
           </button>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
               <ProductSkeleton key={index} />

@@ -1,18 +1,38 @@
 "use client";
-import { Order, OrderStatus } from "@/type/Order";
-import { getAllOrders, updateOrderStatus } from "@/utils/orderApi";
-import { useEffect, useState } from "react";
+import { useFetchOrders } from "@/services/useFetchOrder";
+import {  OrderStatus } from "@/type/Order";
+import {  updateOrderStatus } from "@/utils/orderApi";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaEdit } from "react-icons/fa";
 
 export default function OrderManager() {
-  const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<OrderStatus | "">("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+
+  const {orders = [], isLoading, mutate} = useFetchOrders();
+  
+  // const [orders, setOrders] = useState<Order[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const fetchOrders = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllOrders();
+  //     setOrders(data);
+  //   } catch (error) {
+  //     toast.error("Lấy danh sách đơn hàng thất bại!");
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchOrders();
+  // }, []);
 
   const itemsPerPage = 6;
 
@@ -31,29 +51,12 @@ export default function OrderManager() {
   const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
-  const fetchOrders = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllOrders();
-      setOrders(data);
-    } catch (error) {
-      toast.error("Lấy danh sách đơn hàng thất bại!");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const handleUpdateStatus = async () => {
     if (selectedOrderId && newStatus) {
       try {
         await updateOrderStatus(selectedOrderId, newStatus);
         toast.success("Cập nhật trạng thái thành công!");
-        fetchOrders();
+        mutate();
         setIsModalOpen(false);
       } catch (error) {
         toast.error("Cập nhật trạng thái thất bại!");

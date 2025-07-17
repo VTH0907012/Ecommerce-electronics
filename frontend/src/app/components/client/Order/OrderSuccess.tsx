@@ -1,6 +1,6 @@
 // File: /app/order-success/[orderId]/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   FiCheckCircle,
@@ -9,38 +9,43 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 import Link from "next/link";
-import { Order } from "@/type/Order";
-import { getOrderdetails } from "@/utils/orderApi";
+
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/cartSlice";
+import { useFetchOrdersById } from "@/services/useFetchOrder";
 
 export default function OrderSuccess() {
-    const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
   const router = useRouter();
-  const params = useParams(); // Lấy params từ URL
+  const params = useParams();
 
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [order, setOrder] = useState<Order | null>(null);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // useEffect(() => {
+  //   const fetchOrder = async () => {
+  //     try {
+  //       dispatch(clearCart())
+  //       const data = await getOrderdetails(params.orderId);
+  //       console.log(data);
+  //       setOrder(data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch order:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
+  //   fetchOrder();
+  // }, [params.orderId]);
+  
+  const {order, isLoading} = useFetchOrdersById(params.orderId as string) ;
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        dispatch(clearCart())
-        const data = await getOrderdetails(params.orderId);
-        console.log(data);
-        setOrder(data);
-      } catch (error) {
-        console.error("Failed to fetch order:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrder();
+    if (params.orderId) {
+      dispatch(clearCart());
+    }
   }, [params.orderId]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>

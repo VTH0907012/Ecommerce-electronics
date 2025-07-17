@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getAllBlogs } from "@/utils/blogApi";
+import {  useState } from "react";
 import { BlogItem } from "@/type/BlogItem";
 import Link from "next/link";
 import {
@@ -10,30 +9,36 @@ import {
   FiClock,
 } from "react-icons/fi";
 import Image from "next/image";
+import { useFetchBlogs } from "@/services/useFetchBlogs";
 
 const ITEMS_PER_PAGE = 6;
 
 const Blogs = () => {
-  const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAllBlogs();
-        const publishedBlogs = data.filter(
-          (blog: BlogItem) => blog.isPublished
-        );
-        setBlogs(publishedBlogs);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // const [blogs, setBlogs] = useState<BlogItem[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await getAllBlogs();
+  //       const publishedBlogs = data.filter(
+  //         (blog: BlogItem) => blog.isPublished
+  //       );
+  //       setBlogs(publishedBlogs);
+  //     } catch (error) {
+  //       console.error("Error fetching blogs:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
+  const { blogs: allBlogs, isLoading } = useFetchBlogs();
+  const blogs = allBlogs?.filter((blog: BlogItem) => blog.isPublished) || [];
+
+
 
   const totalPages = Math.ceil(blogs.length / ITEMS_PER_PAGE);
   const paginatedBlogs = blogs.slice(
@@ -87,7 +92,7 @@ const Blogs = () => {
 
       <div className="max-w-7xl mx-auto">
         {/* Loading State */}
-        {loading && (
+        {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-16">
             {[...Array(ITEMS_PER_PAGE)].map((_, index) => (
               <div
@@ -107,7 +112,7 @@ const Blogs = () => {
         )}
 
         {/* Blog Grid */}
-        {!loading && (
+        {!isLoading && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-16">
               {paginatedBlogs.map((blog) => (
@@ -118,15 +123,10 @@ const Blogs = () => {
                 >
                   <div className="h-full bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300 flex flex-col">
                     <div className="relative overflow-hidden h-56">
-                      {/* <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
-                      /> */}
                       <Image
                         src={blog.image}
                         alt={blog.title}
-                        width={500} 
+                        width={500}
                         height={300}
                         className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                         unoptimized
@@ -214,7 +214,7 @@ const Blogs = () => {
           </>
         )}
 
-        {!loading && blogs.length === 0 && (
+        {!isLoading && blogs.length === 0 && (
           <div className="text-center py-16">
             <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <svg

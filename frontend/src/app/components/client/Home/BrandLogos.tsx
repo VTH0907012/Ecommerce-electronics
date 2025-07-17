@@ -1,25 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { getAllBrands } from "@/utils/brandApi";
+import React  from "react";
 import Image from "next/image";
-import { Brand } from "@/type/Brand";
+import useFetchBrands from "@/services/useFetchBrands";
 
 const BrandLogos = () => {
-  const [brands, setBrands] = useState<Brand[]>([]);
+  // const [brands, setBrands] = useState<Brand[]>([]);
+  // useEffect(() => {
+  //   const fetchBrands = async () => {
+  //     try {
+  //       const fetchedBrands = await getAllBrands();
+  //       setBrands(fetchedBrands);
+  //     } catch (err) {
+  //       console.error("Lỗi khi lấy dữ liệu thương hiệu:", err);
+  //     }
+  //   };
+  //   fetchBrands();
+  // }, []);
 
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const fetchedBrands = await getAllBrands();
-        setBrands(fetchedBrands);
-      } catch (err) {
-        console.error("Lỗi khi lấy dữ liệu thương hiệu:", err);
-      }
-    };
-
-    fetchBrands();
-  }, []);
-
+  const {brands = []} = useFetchBrands();
   return (
     <section className="py-10 px-4 bg-white">
       <h2 className="text-2xl font-semibold mb-6 text-center">

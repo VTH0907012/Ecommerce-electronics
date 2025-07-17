@@ -139,12 +139,10 @@
 //     </section>
 //   );
 // };
-
 // export default FlashSaleSection;
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { getAllProducts } from "@/utils/productApi";
-import { Product } from "@/type/Product";
+import React, {  useRef, useCallback } from "react";
+
 import ProductItem from "../Shop/ProductItem";
 import { ProductSkeleton } from "../Common/SkeletonLoading";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -152,31 +150,33 @@ import type { Swiper as SwiperCore } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useFetchProducts } from "@/services/useFetchProduct";
 
 const FlashSaleSection: React.FC = () => {
-  const [flashItems, setFlashItems] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  //const [flashItems, setFlashItems] = useState<Product[]>([]);
   const sliderRef = useRef<SwiperCore | null>(null);
 
-  useEffect(() => {
-    const fetchFlashSale = async () => {
-      try {
-        setLoading(true);
-        const all = await getAllProducts();
-        const filtered = all
-          .filter((p: Product) => p.discountPrice)
-          .slice(0, 10);
-        setFlashItems(filtered);
-      } catch (err) {
-        console.error("Lỗi khi lấy sản phẩm flash sale:", err);
-        setFlashItems([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFlashSale();
-  }, []);
+  const { products = [], isLoading } = useFetchProducts();
+  const flashItems = products.filter((p) => p.discountPrice).slice(0, 6);
+  // const [isLoading, setIsLoading] = useState(true);
+  // useEffect(() => {
+  //   const fetchFlashSale = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const all = await getAllProducts();
+  //       const filtered = all
+  //         .filter((p: Product) => p.discountPrice)
+  //         .slice(0, 10);
+  //       setFlashItems(filtered);
+  //     } catch (err) {
+  //       console.error("Lỗi khi lấy sản phẩm flash sale:", err);
+  //       setFlashItems([]);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchFlashSale();
+  // }, []);
 
   const handlePrev = useCallback(() => {
     sliderRef.current?.slidePrev();
@@ -195,7 +195,7 @@ const FlashSaleSection: React.FC = () => {
           </h2>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
               <ProductSkeleton key={index} />

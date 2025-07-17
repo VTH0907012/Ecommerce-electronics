@@ -9,12 +9,13 @@ import {
   updateUserProfile,
   changePassword,
 } from "@/utils/authApi";
-import { getOrdersByUser, cancelOrder } from "@/utils/orderApi";
+import {  cancelOrder } from "@/utils/orderApi";
 import { fmt } from "@/utils/fmt";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ProfileSkeleton } from "../Common/SkeletonLoading";
 import { Order } from "@/type/Order";
 import ConfirmDeleteModal from "../../Confirm";
+import { useFetchOrdersByUser } from "@/services/useFetchOrder";
 
 const translateStatus = (status: string) => {
   switch (status) {
@@ -37,46 +38,50 @@ const Profile = () => {
   const dispatch = useDispatch();
   const userInfoLogin = useSelector((state: RootState) => state.user);
 
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({ name: "", email: "" });
+  const [user, setUser] = useState({ id: "", name: "", email: "" });
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
   });
-  const [orders, setOrders] = useState<any[]>([]);
+
   const [activeTab, setActiveTab] = useState("dashboard");
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(
     null
   );
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
-  const fetchOrders = async () => {
-    try {
-      const userData = await getCurrentUser();
-      const userOrders = await getOrdersByUser(userData._id);
-      setOrders(userOrders);
-    } catch (err: any) {
-      toast.error(err.message);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userData = await getCurrentUser();
-        setUser({ name: userData.name, email: userData.email });
-        await fetchOrders();
+        setUser({
+          id: userData._id,
+          name: userData.name,
+          email: userData.email,
+        });
       } catch (err: any) {
         toast.error(err.message);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchData();
   }, []);
+    // const [orders, setOrders] = useState<any[]>([]);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const fetchOrders = async (userId: string) => {
+  //   try {
+  //     const userOrders = await getOrdersByUser(userId);
+  //     setOrders(userOrders);
+  //   } catch (err: any) {
+  //     toast.error(err.message);
+  //   }
+  // };
+
+  
+  const {orders = [], isLoading, mutate} = useFetchOrdersByUser(user.id);
 
   const toggleOrderDetails = (orderId: string) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
@@ -143,9 +148,9 @@ const Profile = () => {
     setCancellingOrderId(orderToDelete._id!);
     try {
       await cancelOrder(orderToDelete._id!);
-
       toast.success("huỷ đơn hàng  thành công");
-      await fetchOrders();
+      //await fetchOrders(user.id);
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -531,7 +536,7 @@ const Profile = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <ProfileSkeleton />;
   }
 

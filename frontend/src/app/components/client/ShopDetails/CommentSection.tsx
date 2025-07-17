@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Comment } from "@/type/Comment";
+import { useState } from "react";
+
 import {
-  getCommentById,
+
   createComment,
   deleteComment,
 } from "@/utils/commentApi";
@@ -14,27 +14,33 @@ import { vi } from "date-fns/locale";
 import toast from "react-hot-toast";
 import ConfirmDeleteModal from "../../Confirm";
 import Link from "next/link";
+import {  useFetchCommentsByProductId } from "@/services/useFetchComments";
 
 interface CommentSectionProps {
   productId: string;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ productId }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const user = useSelector((state: RootState) => state.user.user);
 
-  const fetchComments = async () => {
-    try {
-      const res = await getCommentById(productId);
-      setComments(res);
-    } catch (error) {
-      console.error("Lỗi khi tải bình luận:", error);
-    }
-  };
+  const {comments = [], mutate} = useFetchCommentsByProductId(productId );
+  //const [comments, setComments] = useState<Comment[]>([]);
+  // useEffect(() => {
+  //   fetchComments();
+  // }, [productId]);
+
+  // const fetchComments = async () => {
+  //   try {
+  //     const res = await getCommentById(productId);
+  //     setComments(res);
+  //   } catch (error) {
+  //     console.error("Lỗi khi tải bình luận:", error);
+  //   }
+  // };
 
   const handleSubmit = async () => {
     if (!user) return toast.error("Bạn cần đăng nhập để bình luận");
@@ -52,7 +58,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ productId }) => {
       await createComment(productId, newComment);
       setContent("");
       setRating(0);
-      await fetchComments();
+      mutate();
     } catch (error) {
       console.error("Lỗi khi gửi bình luận:", error);
     } finally {
@@ -81,7 +87,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ productId }) => {
     try {
       await deleteComment(commentdelete);
       toast.success("Xoá bình luận thành công");
-      await fetchComments();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -89,10 +95,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ productId }) => {
     }
     setCommentDelete(null);
   };
-
-  useEffect(() => {
-    fetchComments();
-  }, [productId]);
 
   const averageRating =
     comments.length > 0

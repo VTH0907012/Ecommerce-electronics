@@ -128,48 +128,53 @@
 //   );
 // };
 // export default CategorySection;
+
+
 "use client";
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperCore } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Autoplay } from "swiper/modules";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Category } from "@/type/Category";
-import { getAllCategorys } from "@/utils/cateApi";
+
 import { FaTags } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { CategorySkeleton } from "../Common/SkeletonLoading";
 import Image from "next/image";
+import useFetchCategories from "@/services/useFetchCategories";
 
 const CategorySection: React.FC = () => {
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(true);
+
   const sliderRef = useRef<SwiperCore | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllCategorys();
-        if (Array.isArray(data)) {
-          setCategories(data);
-        } else {
-          setCategories([]);
-        }
-      } catch (err) {
-        console.error("Error fetching categories", err);
-        setCategories([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { categories = [], isLoading} = useFetchCategories();
+  // const [categories, setCategories] = React.useState<Category[]>([]);
+  // const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const data = await getAllCategorys();
+  //       if (Array.isArray(data)) {
+  //         setCategories(data);
+  //       } else {
+  //         setCategories([]);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching categories", err);
+  //       setCategories([]);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, []);
+  //   fetchCategories();
+  // }, []);
 
+  
   const handlePrev = useCallback(() => {
     sliderRef.current?.slidePrev();
   }, []);
@@ -191,7 +196,7 @@ const CategorySection: React.FC = () => {
       </div>
 
       <div className="relative mt-5">
-        {loading ? (
+        {isLoading ? (
           <div className="flex gap-4">
             {[...Array(6)].map((_, index) => (
               <CategorySkeleton key={index} />

@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import {
-  getAllUser,
+  
   deleteUser,
   toggleBlockUser,
   toggleAdmin,
@@ -18,12 +18,35 @@ import {
 import { FiSearch } from "react-icons/fi";
 import UserFormModal from "./UserFormModal";
 import ConfirmDeleteModal from "../../Confirm";
+import useFetchUsers from "@/services/useFetchUses";
 
 export default function UserManager() {
-  const [users, setUsers] = useState<User[]>([]);
   const [showModal, setShowModal] = useState(false);
   // const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const {users = [], isLoading, mutate} = useFetchUsers();
+
+  // const [users, setUsers] = useState<User[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  
+  // const fetchUsers = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllUser();
+  //     setUsers(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, []);
+
+  
+  
   const [searchTerm, setSearchTerm] = useState("");
 
   // Phân trang
@@ -42,22 +65,6 @@ export default function UserManager() {
   const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
-  const fetchUsers = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllUser();
-      setUsers(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const handleAdd = () => {
     // setSelectedUser(null);
     setShowModal(true);
@@ -72,7 +79,7 @@ export default function UserManager() {
       await deleteUser(userToDelete._id!);
 
       toast.success("Xóa người dùng thành công");
-      fetchUsers();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -82,14 +89,14 @@ export default function UserManager() {
 
   const confirmDelete = (user: User) => {
     setUserToDelete(user);
-    setShowDeleteModal(true); 
+    setShowDeleteModal(true);
   };
 
   const handleToggleBlock = async (id: string) => {
     try {
       await toggleBlockUser(id);
       toast.success("Đã cập nhật trạng thái khóa");
-      fetchUsers();
+      mutate();
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -99,7 +106,7 @@ export default function UserManager() {
     try {
       await toggleAdmin(id);
       toast.success("Đã cập nhật quyền admin");
-      fetchUsers();
+      mutate();
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -375,7 +382,7 @@ export default function UserManager() {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
-            fetchUsers();
+            mutate();
             setCurrentPage(1);
           }}
         />

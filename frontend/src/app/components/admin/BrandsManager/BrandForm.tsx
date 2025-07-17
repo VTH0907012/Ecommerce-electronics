@@ -164,7 +164,7 @@ export default function BrandForm({ brand, onClose, onSuccess }: Props) {
                   />
                   <span className="text-gray-500 text-sm">Chọn ảnh</span>
                   {form.image && (
-                    <div className="relative mt-2 h-32 w-auto max-w-[200px]">
+                    <div className="relative mt-2 h-40 w-48">
                       <Image
                         src={form.image}
                         alt="preview"

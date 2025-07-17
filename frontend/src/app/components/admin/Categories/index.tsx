@@ -1,22 +1,39 @@
 "use client";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Category } from "@/type/Category";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { deleteCategory, getAllCategorys } from "@/utils/cateApi";
+import { deleteCategory,  } from "@/utils/cateApi";
 import CategoryFormModal from "./CategoryForm";
 import ConfirmDeleteModal from "../../Confirm";
 import Image from "next/image";
+import useFetchCategories from "@/services/useFetchCategories";
 
 export default function CategoryManager() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const {categories = [], isLoading, mutate } = useFetchCategories();
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [categories, setCategories] = useState<Category[]>([]);
+  // const fetchCategories = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllCategorys();
+  //     setCategories(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchCategories();
+  // }, []);
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,22 +53,6 @@ export default function CategoryManager() {
     indexOfLastItem
   );
   const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
-
-  const fetchCategories = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllCategorys();
-      setCategories(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const handleAdd = () => {
     setSelectedCategory(null);
@@ -76,7 +77,7 @@ export default function CategoryManager() {
         await deleteOldImage(categoryToDelete.image);
       }
       toast.success("Xóa danh mục thành công");
-      fetchCategories();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -344,7 +345,7 @@ export default function CategoryManager() {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
-            fetchCategories();
+            mutate();
             setCurrentPage(1);
           }}
         />

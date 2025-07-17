@@ -1,25 +1,48 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getAllBlogs, deleteBlog } from "@/utils/blogApi";
+import {  useState } from "react";
+import {  deleteBlog } from "@/utils/blogApi";
 import toast from "react-hot-toast";
 import { BlogItem } from "@/type/BlogItem";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import BlogFormModal from "./BlogForm";
 import ConfirmDeleteModal from "../../Confirm";
+import useBlogs from "@/services/useFetchBlogs";
+import Image from "next/image";
 
 export default function BlogManager() {
-  const [blogs, setBlogs] = useState<BlogItem[]>([]);
+  // const [blogs, setBlogs] = useState<BlogItem[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<BlogItem | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { blogs = [], isLoading, mutate } = useBlogs();
+
+
+  // const fetchBlogs = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllBlogs();
+  //     setBlogs(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchBlogs();
+  // }, []);
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
   const filteredBlogs = blogs.filter(
-    (blog) =>
+    (blog: BlogItem) =>
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (blog.content &&
         blog.content.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -29,23 +52,6 @@ export default function BlogManager() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentBlogs = filteredBlogs.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
-
-  const fetchBlogs = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllBlogs();
-      setBlogs(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
   const handleAdd = () => {
     setSelectedBlog(null);
     setShowModal(true);
@@ -68,7 +74,7 @@ export default function BlogManager() {
         await deleteOldImage(blogToDelete.image);
       }
       toast.success("Xóa bài viết thành công");
-      fetchBlogs();
+      mutate();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -192,7 +198,7 @@ export default function BlogManager() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {currentBlogs.map((blog) => (
+                  {currentBlogs.map((blog : BlogItem) => (
                     <tr key={blog._id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-900">
@@ -204,11 +210,13 @@ export default function BlogManager() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {blog.image ? (
-                          <img
-                            src={blog.image}
-                            alt={blog.title}
-                            className="h-10 w-10 object-cover rounded"
-                          />
+<Image
+  src={blog.image}
+  alt={blog.title}
+  width={40}
+  height={40}
+  className="h-10 w-10 object-cover rounded"
+/>
                         ) : (
                           <div className="h-10 w-10 rounded bg-gray-200 flex items-center justify-center">
                             <svg
@@ -331,7 +339,7 @@ export default function BlogManager() {
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);
-            fetchBlogs();
+            mutate();
             setCurrentPage(1);
           }}
         />

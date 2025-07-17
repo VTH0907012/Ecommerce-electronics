@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Product } from "@/type/Product";
 import Rating from "@/app/components/client/Rating";
@@ -7,44 +7,51 @@ import { fmt } from "@/utils/fmt";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux";
 import { addToCart } from "@/redux/cartSlice";
-import { getProductById, getRelatedProducts } from "@/utils/productApi";
 import { useParams } from "next/navigation";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
 import Breadcrumb from "./Breadcrumb";
 import { motion } from "framer-motion";
 import ProductItem from "../Shop/ProductItem";
 import CommentSection from "./CommentSection";
+import {
+  useFetchProductById,
+  useFetchRelatedProduct,
+} from "@/services/useFetchProduct";
 
 const ProductDetail = () => {
-  const [loading, setLoading] = useState(true);
   const { id } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [loadingRelated, setLoadingRelated] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const productData = await getProductById(id as string);
-        setProduct(productData);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [product, setProduct] = useState<Product | null>(null);
+  // const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  // const [isLoadingRelated, setIsLoadingRelated] = useState(false);
 
-        // Fetch related products
-        setLoadingRelated(true);
-        const related = await getRelatedProducts(id as string);
-        setRelatedProducts(related);
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-      } finally {
-        setLoading(false);
-        setLoadingRelated(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const productData = await getProductById(id as string);
+  //       setProduct(productData);
 
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
+  //       // Fetch related products
+  //       setLoadingRelated(true);
+  //       const related = await getRelatedProducts(id as string);
+  //       setRelatedProducts(related);
+  //     } catch (error) {
+  //       console.error("Failed to fetch data", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //       setLoadingRelated(false);
+  //     }
+  //   };
+
+  //   if (id) {
+  //     fetchData();
+  //   }
+  // }, [id]);
+  const { product, isLoading } = useFetchProductById(id as string);
+  const { product: relatedProducts = [], isLoading: isLoadingRelated } =
+    useFetchRelatedProduct(id as string);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -61,7 +68,7 @@ const ProductDetail = () => {
     dispatch(addToCart({ ...item, quantityToBuy: quantity }));
   };
 
-  if (loading || !product) {
+  if (isLoading || !product) {
     return <ProductDetailSkeleton />;
   }
 
@@ -307,7 +314,7 @@ const ProductDetail = () => {
             Sản phẩm liên quan
           </h2>
 
-          {loadingRelated ? (
+          {isLoadingRelated ? (
             <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 gap-6">
               {[...Array(5)].map((_, index) => (
                 <div

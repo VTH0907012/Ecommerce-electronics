@@ -1,73 +1,107 @@
 "use client";
-import { useEffect, useState } from "react";
+import {  useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaTrash, FaSearch } from "react-icons/fa";
-import { deleteComment, getAllComments, getCommentById,  } from "@/utils/commentApi";
+import {
+  deleteComment,
+
+} from "@/utils/commentApi";
 import ConfirmDeleteModal from "../../Confirm";
 import { Product } from "@/type/Product";
 import { Comment } from "@/type/Comment";
+import {
+  useFetchComments,
+  useFetchCommentsByProductId,
+} from "@/services/useFetchComments";
 
 export default function CommentManager() {
-  const [allComments, setAllComments] = useState<Comment[]>([]);
-  const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  //const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
+  //const [allComments, setAllComments] = useState<Comment[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const fetchAllComments = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getAllComments();
+  //     setAllComments(data);
+  //     setFilteredComments(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // const fetchProductComments = async (productId: string) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const data = await getCommentById(productId);
+  //     setFilteredComments(data);
+  //   } catch (error: any) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchAllComments();
+  // }, []);
+
+  const { comments: allComments, isLoading, mutate } = useFetchComments();
+  const {
+    comments: productComments,
+    //isLoading: isProductLoading,
+    mutate: mutateProduct,
+  } = useFetchCommentsByProductId(selectedProduct?._id || "");
+
+  const sourceComments = selectedProduct ? productComments : allComments;
+  const filteredComments = useMemo(() => {
+    if (!sourceComments) return [];
+
+    return sourceComments.filter(
+      (comment) =>
+        searchTerm === "" ||
+        comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        comment.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        comment.product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sourceComments, searchTerm]);
+
+
+  // useEffect(() => {
+  //   if (!searchTerm) {
+  //     setFilteredComments(
+  //       selectedProduct
+  //         ? allComments.filter((c) => c.product?._id === selectedProduct._id)
+  //         : allComments
+  //     );
+  //   } else {
+  //     const filtered = allComments.filter(
+  //       (comment) =>
+  //         comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //         comment.user?.name
+  //           ?.toLowerCase()
+  //           .includes(searchTerm.toLowerCase()) ||
+  //         comment.product?.name
+  //           ?.toLowerCase()
+  //           .includes(searchTerm.toLowerCase())
+  //     );
+  //     setFilteredComments(filtered);
+  //   }
+  //   setCurrentPage(1);
+  // }, [searchTerm, allComments, selectedProduct]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentComments = filteredComments.slice(indexOfFirstItem, indexOfLastItem);
+  const currentComments = filteredComments.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(filteredComments.length / itemsPerPage);
-
-  const fetchAllComments = async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAllComments();
-      setAllComments(data);
-      setFilteredComments(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchProductComments = async (productId: string) => {
-    setIsLoading(true);
-    try {
-      const data = await getCommentById(productId);
-      setFilteredComments(data);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllComments();
-  }, []);
-
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredComments(selectedProduct ? 
-        allComments.filter(c => c.product?._id === selectedProduct._id) : 
-        allComments
-      );
-    } else {
-      const filtered = allComments.filter(
-        (comment) =>
-          comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (comment.user?.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (comment.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-      setFilteredComments(filtered);
-    }
-    setCurrentPage(1);
-  }, [searchTerm, allComments, selectedProduct]);
 
   const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -78,9 +112,11 @@ export default function CommentManager() {
       await deleteComment(commentToDelete._id!);
       toast.success("Xóa bình luận thành công");
       if (selectedProduct) {
-        fetchProductComments(selectedProduct._id!);
+        //fetchProductComments(selectedProduct._id!);
+         mutateProduct();
       } else {
-        fetchAllComments();
+        //fetchAllComments();
+        mutate();
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -96,7 +132,11 @@ export default function CommentManager() {
 
   const renderUserAvatar = () => (
     <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-      <svg className="h-5 w-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="h-5 w-5 text-gray-500"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
       </svg>
     </div>
@@ -106,7 +146,9 @@ export default function CommentManager() {
     <div className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-800">
-          {selectedProduct ? `Bình luận sản phẩm: ${selectedProduct.name}` : "Quản lý Bình luận"}
+          {selectedProduct
+            ? `Bình luận sản phẩm: ${selectedProduct.name}`
+            : "Quản lý Bình luận"}
         </h2>
 
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -120,7 +162,7 @@ export default function CommentManager() {
             />
             <FaSearch className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
           </div>
-          
+
           {selectedProduct && (
             <button
               onClick={() => {
@@ -191,7 +233,10 @@ export default function CommentManager() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentComments.map((comment) => (
-                    <tr key={comment._id} className="hover:bg-gray-50 transition">
+                    <tr
+                      key={comment._id}
+                      className="hover:bg-gray-50 transition"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {renderUserAvatar()}
@@ -212,7 +257,7 @@ export default function CommentManager() {
                       </td>
                       {!selectedProduct && (
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <button 
+                          <button
                             onClick={() => setSelectedProduct(comment.product)}
                             className="text-blue-600 hover:text-blue-800 hover:underline"
                           >
@@ -245,8 +290,8 @@ export default function CommentManager() {
             <div className="mt-6 flex items-center justify-between">
               <div className="text-sm text-gray-500">
                 Hiển thị {indexOfFirstItem + 1} đến{" "}
-                {Math.min(indexOfLastItem, filteredComments.length)} trong tổng số{" "}
-                {filteredComments.length} bình luận
+                {Math.min(indexOfLastItem, filteredComments.length)} trong tổng
+                số {filteredComments.length} bình luận
               </div>
               <div className="flex space-x-2">
                 <button
@@ -256,34 +301,38 @@ export default function CommentManager() {
                 >
                   Trước
                 </button>
-                {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = idx + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = idx + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + idx;
-                  } else {
-                    pageNum = currentPage - 2 + idx;
-                  }
+                {Array.from({ length: Math.min(5, totalPages) }).map(
+                  (_, idx) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = idx + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = idx + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + idx;
+                    } else {
+                      pageNum = currentPage - 2 + idx;
+                    }
 
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => setCurrentPage(pageNum)}
-                      className={`px-3 py-1 border rounded-md ${
-                        currentPage === pageNum
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-1 border rounded-md ${
+                          currentPage === pageNum
+                            ? "bg-blue-600 text-white border-blue-600"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  }
+                )}
                 <button
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
                   disabled={currentPage === totalPages}
                   className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >

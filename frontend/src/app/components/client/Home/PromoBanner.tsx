@@ -15,27 +15,27 @@ const PromoBanner = () => {
             <h2 className="font-bold text-xl lg:text-heading-4 xl:text-heading-3 text-dark mb-5">
               GIẢM GIÁ LÊN ĐẾN 30%
             </h2>
-    
+
             <p>
               iPhone 14 sử dụng chip A15 Bionic mạnh mẽ giống với iPhone 13 Pro,
               với GPU 5 lõi hỗ trợ mọi tính năng mới nhất.
             </p>
 
-    <Link
-                href="/products/6820ce88762a50e6e20d6d6b"
+            <Link
+              href="/products/6820ce88762a50e6e20d6d6b"
               className="mt-3 inline-block text-sm font-semibold text-white bg-blue-600 px-6 py-2.5 rounded-lg shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
             >
               Mua ngay
             </Link>
           </div>
 
-         <Image
-  src="/images/promo/promo-01.png"
-  alt="Hình ảnh khuyến mãi"
-  className="absolute bottom-0 right-4 lg:right-26 -z-1 w-auto h-auto"
-  width={274}
-  height={350}
-/>
+          <Image
+            src="/images/promo/promo-01.png"
+            alt="Hình ảnh khuyến mãi"
+            className="absolute bottom-0 right-4 lg:right-26 -z-1 w-auto h-auto"
+            width={274}
+            height={350}
+          />
         </div>
 
         <div className="grid gap-7.5 grid-cols-1 lg:grid-cols-2">
