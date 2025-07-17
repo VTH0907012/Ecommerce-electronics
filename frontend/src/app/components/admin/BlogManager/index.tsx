@@ -1,14 +1,14 @@
 "use client";
-import {  useState } from "react";
-import {  deleteBlog } from "@/utils/blogApi";
+import { useState } from "react";
+import { deleteBlog } from "@/utils/blogApi";
 import toast from "react-hot-toast";
 import { BlogItem } from "@/type/BlogItem";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import BlogFormModal from "./BlogForm";
 import ConfirmDeleteModal from "../../Confirm";
-import useBlogs from "@/services/useFetchBlogs";
 import Image from "next/image";
+import { useFetchBlogs } from "@/services/useFetchBlogs";
 
 export default function BlogManager() {
   // const [blogs, setBlogs] = useState<BlogItem[]>([]);
@@ -18,8 +18,7 @@ export default function BlogManager() {
   const [selectedBlog, setSelectedBlog] = useState<BlogItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { blogs = [], isLoading, mutate } = useBlogs();
-
+  const { blogs = [], isLoading, mutate } = useFetchBlogs();
 
   // const fetchBlogs = async () => {
   //   setIsLoading(true);
@@ -35,8 +34,6 @@ export default function BlogManager() {
   // useEffect(() => {
   //   fetchBlogs();
   // }, []);
-
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -62,7 +59,6 @@ export default function BlogManager() {
     setShowModal(true);
   };
 
-
   const [blogToDelete, setBlogToDelete] = useState<BlogItem | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -78,7 +74,7 @@ export default function BlogManager() {
     } catch (error: any) {
       toast.error(error.message);
     } finally {
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
@@ -198,7 +194,7 @@ export default function BlogManager() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {currentBlogs.map((blog : BlogItem) => (
+                  {currentBlogs.map((blog: BlogItem) => (
                     <tr key={blog._id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-900">
@@ -210,13 +206,13 @@ export default function BlogManager() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {blog.image ? (
-<Image
-  src={blog.image}
-  alt={blog.title}
-  width={40}
-  height={40}
-  className="h-10 w-10 object-cover rounded"
-/>
+                          <Image
+                            src={blog.image}
+                            alt={blog.title}
+                            width={40}
+                            height={40}
+                            className="h-10 w-10 object-cover rounded"
+                          />
                         ) : (
                           <div className="h-10 w-10 rounded bg-gray-200 flex items-center justify-center">
                             <svg
