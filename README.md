@@ -40,6 +40,7 @@ Trang web cho phép **khách hàng** có thể tìm kiếm sản phẩm, thêm v
 - **Tailwind CSS** - thiết kế responsive, hiện đại
 - **Redux Toolkit** - quản lý state hiệu quả
 - **Redux Persist** - lưu trữ trạng thái ứng dụng
+- **SWR** - fetch dữ liệu nhanh, tối ưu và cache hiệu quả
 
 ### ⚙️ Backend
 - **Node.js** + **Express.js**
