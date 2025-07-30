@@ -26,7 +26,7 @@ export const register = async (userData: {
 };
 
 export const getCurrentUser = async () => {
-  const res = await fetch("/api/user", {
+  const res = await fetch("/api/user/profile", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export const changePassword = async (passwordData: { currentPassword: string; ne
   return data;
 };
 export const updateUserProfile = async (userData: { name: string; email: string }) => {
-  const res = await fetch("/api/user", {
+  const res = await fetch("/api/user/profile", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

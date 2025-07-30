@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import axiosInstance from "../../../utils/axiosConfig"; 
+import axiosInstance from "../../../../utils/axiosConfig"; 
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/type/ErrorResponse";
 
@@ -41,7 +41,7 @@ export async function PUT(req: Request) {
 
     const userId = resMe.data._id;
 
-    const updateRes = await axiosInstance.put(`/users/${userId}`, body, {
+    const updateRes = await axiosInstance.put(`/api/users/${userId}`, body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

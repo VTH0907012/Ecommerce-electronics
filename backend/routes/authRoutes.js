@@ -21,7 +21,7 @@ router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 router.patch("/users/:id/block", toggleBlockUser);
 router.patch("/users/:id/admin", toggleAdmin);
-router.get('/users/me', protect, getUser); // ✅ route này dùng token để lấy user hiện tại
-router.post('/users/change-password', protect, changePassword); // ✅ route này dùng token để lấy user hiện tại
+router.get('/users/me', protect, getUser); 
+router.post('/users/change-password', protect, changePassword); 
 
 module.exports = router;
