@@ -48,6 +48,10 @@ export default function CategoryFormModal({
       toast.error("Vui lòng nhập tên danh mục");
       return;
     }
+    if (!form.image.trim()) {
+      toast.error("Vui lòng chọn ảnh danh mục");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -90,9 +94,12 @@ export default function CategoryFormModal({
 
       onSuccess();
       onClose();
-    } catch (err) {
-      console.error("Lỗi khi lưu danh mục:", err);
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    } catch (err: any) {
+      if (err.response?.status === 400 && err.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      }
     } finally {
       setIsLoading(false);
     }

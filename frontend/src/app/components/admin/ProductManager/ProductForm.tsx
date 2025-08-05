@@ -82,8 +82,21 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
       setPreviewImages(previews);
     }
   };
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const handleSubmit = async () => {
+    // Validate form
+    const newErrors: Record<string, string> = {};
+    if (!form.name.trim()) newErrors.name = "Tên sản phẩm không được để trống";
+    if (form.price <= 0) newErrors.price = "Giá phải lớn hơn 0";
+    if (form.quantity <= 0) newErrors.quantity = "Số lượng lớn hơn 0";
+    if (!form.category) newErrors.category = "Vui lòng chọn danh mục";
+    if (!form.brand) newErrors.brand = "Vui lòng chọn thương hiệu";
+    if (!product && imageFiles.length === 0)
+      newErrors.images = "Vui lòng chọn ít nhất 1 hình ảnh";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    //
     try {
       let imageUrls = form.images || [];
 
@@ -128,8 +141,8 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
 
       onSuccess();
       onClose();
-    } catch (error) {
-      console.error("Error submitting product:", error);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   };
 
@@ -174,6 +187,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 onChange={handleChange}
                 placeholder="Nhập tên sản phẩm"
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
 
             <div>
@@ -188,6 +204,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 onChange={handleChange}
                 placeholder="Nhập giá sản phẩm"
               />
+              {errors.price && (
+                <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+              )}
             </div>
 
             <div>
@@ -202,6 +221,11 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 onChange={handleChange}
                 placeholder="Nhập giá khuyến mãi"
               />
+              {errors.discountPrice && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.discountPrice}
+                </p>
+              )}
             </div>
 
             <div>
@@ -216,6 +240,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 onChange={handleChange}
                 placeholder="Nhập số lượng"
               />
+              {errors.quantity && (
+                <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>
+              )}
             </div>
 
             <div>
@@ -235,6 +262,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                   </option>
                 ))}
               </select>
+              {errors.category && (
+                <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+              )}
             </div>
 
             <div>
@@ -254,6 +284,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                   </option>
                 ))}
               </select>
+              {errors.brand && (
+                <p className="text-red-500 text-sm mt-1">{errors.brand}</p>
+              )}
             </div>
           </div>
 
@@ -299,6 +332,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
               multiple
               onChange={handleImageChange}
             />
+            {errors.images && (
+              <p className="text-red-500 text-sm mt-1">{errors.images}</p>
+            )}
             <div className="mt-2 flex gap-2 flex-wrap">
               {previewImages.map((src, index) => (
                 <div key={index} className="relative">

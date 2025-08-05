@@ -9,7 +9,7 @@ import {
   updateUserProfile,
   changePassword,
 } from "@/utils/authApi";
-import {  cancelOrder } from "@/utils/orderApi";
+import { cancelOrder } from "@/utils/orderApi";
 import { fmt } from "@/utils/fmt";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ProfileSkeleton } from "../Common/SkeletonLoading";
@@ -52,7 +52,6 @@ const Profile = () => {
   );
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,12 +63,12 @@ const Profile = () => {
         });
       } catch (err: any) {
         toast.error(err.message);
-      } 
+      }
     };
 
     fetchData();
   }, []);
-    // const [orders, setOrders] = useState<any[]>([]);
+  // const [orders, setOrders] = useState<any[]>([]);
   // const [isLoading, setIsLoading] = useState(true);
   // const fetchOrders = async (userId: string) => {
   //   try {
@@ -80,8 +79,7 @@ const Profile = () => {
   //   }
   // };
 
-  
-  const {orders = [], isLoading, mutate} = useFetchOrdersByUser(user.id);
+  const { orders = [], isLoading, mutate } = useFetchOrdersByUser(user.id);
 
   const toggleOrderDetails = (orderId: string) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
@@ -90,9 +88,24 @@ const Profile = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>(
+    {}
+  );
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: Record<string, string> = {};
+    if (!user.name.trim()) newErrors.name = "Họ tên không được để trống";
+    if (!user.email.trim()) newErrors.email = "Email không được để trống";
+    else if (!/\S+@\S+\.\S+/.test(user.email))
+      newErrors.email = "Email không hợp lệ";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     setSaving(true);
     try {
       await updateUserProfile(user);
@@ -117,6 +130,20 @@ const Profile = () => {
   };
 
   const handlePasswordChange = async () => {
+    const newErrors: Record<string, string> = {};
+    if (!passwords.currentPassword)
+      newErrors.currentPassword = "Vui lòng nhập mật khẩu hiện tại";
+    if (!passwords.newPassword)
+      newErrors.newPassword = "Vui lòng nhập mật khẩu mới";
+    else if (passwords.newPassword.length < 6)
+      newErrors.newPassword = "Mật khẩu mới phải tối thiểu 6 ký tự";
+
+    if (Object.keys(newErrors).length > 0) {
+      setPasswordErrors(newErrors);
+      return;
+    }
+
+    setPasswordErrors({});
     try {
       await changePassword(passwords);
       toast.success("Đổi mật khẩu thành công!");
@@ -126,7 +153,11 @@ const Profile = () => {
       toast.error(err.message);
     }
   };
-
+  const handleCancelChangePassword = () => {
+    setShowModal(false); // Đóng modal
+    setPasswordErrors({}); // Clear error validate
+    setPasswords({ currentPassword: "", newPassword: "" }); // Clear input
+  };
   // const handleCancelOrder = async (orderId: string) => {
   //   setCancellingOrderId(orderId);
   //   try {
@@ -493,8 +524,10 @@ const Profile = () => {
                   value={user.name}
                   onChange={handleChange}
                   className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
-                  required
                 />
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                )}
               </div>
 
               <div>
@@ -507,8 +540,10 @@ const Profile = () => {
                   value={user.email}
                   onChange={handleChange}
                   className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400"
-                  required
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
@@ -603,6 +638,11 @@ const Profile = () => {
                 }
                 className="w-full border rounded-lg px-4 py-2"
               />
+              {passwordErrors.currentPassword && (
+                <p className="text-sm text-red-500">
+                  {passwordErrors.currentPassword}
+                </p>
+              )}
               <input
                 type="password"
                 placeholder="Mật khẩu mới"
@@ -612,10 +652,14 @@ const Profile = () => {
                 }
                 className="w-full border rounded-lg px-4 py-2"
               />
-
+              {passwordErrors.newPassword && (
+                <p className="text-sm text-red-500">
+                  {passwordErrors.newPassword}
+                </p>
+              )}
               <div className="flex justify-end space-x-2">
                 <button
-                  onClick={() => setShowModal(false)}
+                  onClick={handleCancelChangePassword}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 "
                 >
                   Huỷ

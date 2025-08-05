@@ -48,12 +48,26 @@ export default function BlogFormModal({ blog, onClose, onSuccess }: Props) {
       isPublished: e.target.checked,
     }));
   };
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleSubmit = async () => {
+    const newErrors: { [key: string]: string } = {};
+
     if (!form.title.trim()) {
-      toast.error("Tiêu đề là bắt buộc!");
-      return;
+      newErrors.title = "Tiêu đề là bắt buộc!";
     }
+
+    if (!form.content.trim()) {
+      newErrors.content = "Nội dung là bắt buộc!";
+    }
+
+    if (!form.image && !imageFile) {
+      newErrors.image = "Hình ảnh là bắt buộc!";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
 
     setIsLoading(true);
 
@@ -144,11 +158,14 @@ export default function BlogFormModal({ blog, onClose, onSuccess }: Props) {
                 onChange={handleChange}
                 placeholder="Nhập tiêu đề blog"
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nội dung
+                Nội dung *
               </label>
               <textarea
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -158,11 +175,14 @@ export default function BlogFormModal({ blog, onClose, onSuccess }: Props) {
                 rows={5}
                 placeholder="Nhập nội dung blog"
               />
+              {errors.content && (
+                <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Hình ảnh
+                Hình ảnh *
               </label>
               <div className="flex items-center space-x-4">
                 <label className="flex flex-col items-center justify-center w-full px-4 py-6 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-500 transition">
@@ -172,6 +192,7 @@ export default function BlogFormModal({ blog, onClose, onSuccess }: Props) {
                     className="hidden"
                     onChange={handleImageChange}
                   />
+
                   <svg
                     className="w-8 h-8 text-gray-400"
                     fill="none"
@@ -185,11 +206,15 @@ export default function BlogFormModal({ blog, onClose, onSuccess }: Props) {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
+
                   <span className="mt-2 text-sm text-gray-600">
                     Chọn ảnh hoặc kéo thả vào đây
                   </span>
                 </label>
               </div>
+              {errors.image && (
+                <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+              )}
               {form.image && (
                 <div className="mt-2 relative h-32 w-auto">
                   <Image
