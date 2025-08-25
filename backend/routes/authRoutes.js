@@ -9,10 +9,13 @@ const {
   toggleAdmin,
   getAllUsers,
   getUser,
-  changePassword
+  changePassword,
+  googleLogin
 
 } = require("../controllers/authController");
 const { protect } = require("../middleware/authMiddleware");
+
+router.post('/google-login', googleLogin);
 
 router.post("/register", register);
 router.post("/login", login);

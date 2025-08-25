@@ -6,9 +6,10 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { AppDispatch } from "@/redux";
-import { loginUser } from "@/utils/authApi";
+import { loginGoogle, loginUser } from "@/utils/authApi";
 import { setCredentials } from "@/redux/userSlice";
 import { FiMail, FiLock, FiArrowRight } from "react-icons/fi";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,6 +37,21 @@ const Login = () => {
     }
   };
 
+  // Đăng nhập Google
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    try {
+      const res = await loginGoogle(credentialResponse.credential);
+      if (res.status == 200) {
+        dispatch(setCredentials(res));
+        toast.success("Đăng nhập Google thành công!");
+        router.push("/checkout");
+      }
+
+    } catch (error: any) {
+      console.error(error.response?.data || error.message);
+      toast.error("Đăng nhập Google thất bại");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="bg-white rounded-2xl w-full max-w-md p-8 space-y-6 shadow-xl">
@@ -131,6 +147,14 @@ const Login = () => {
             )}
           </button>
         </form>
+
+        {/* Google Login */}
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => toast.error("Google Login thất bại")}
+          />
+        </div>
 
         <div className="text-center text-sm text-gray-500">
           Bạn chưa có tài khoản?{" "}
