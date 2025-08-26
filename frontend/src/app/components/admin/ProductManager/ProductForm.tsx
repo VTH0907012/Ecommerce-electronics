@@ -5,7 +5,7 @@ import { createProduct, updateProduct } from "@/utils/productApi";
 import { getAllCategorys } from "@/utils/cateApi";
 import { getAllBrands } from "@/utils/brandApi";
 import toast from "react-hot-toast";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import Image from "next/image";
 

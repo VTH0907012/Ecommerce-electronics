@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import { AppDispatch } from "@/redux";
 import { addToCart } from "@/redux/cartSlice";
 import { FiShoppingCart } from "react-icons/fi";

@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import axiosInstance from "@/utils/axiosConfig";
-import { BlogItem } from "@/type/BlogItem";
+import { BlogItem } from "@/types/BlogItem";
 
 export const fetcher = (url: string) =>
   axiosInstance.get(url).then((res) => res.data);

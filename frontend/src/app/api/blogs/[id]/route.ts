@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { AxiosError } from "axios";
-import { ErrorResponse } from "@/type/ErrorResponse";
+import { ErrorResponse } from "@/types/ErrorResponse";
 
 export async function PUT(req: Request) {
   try {

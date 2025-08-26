@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import Rating from "@/app/components/client/Rating";
 import { fmt } from "@/utils/fmt";
 import { useDispatch } from "react-redux";

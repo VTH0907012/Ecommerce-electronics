@@ -1,4 +1,4 @@
-import {  BlogItem } from "@/type/BlogItem";
+import {  BlogItem } from "@/types/BlogItem";
 import axiosInstance from "./axiosConfig";
 
 export async function getAllBlogs() {

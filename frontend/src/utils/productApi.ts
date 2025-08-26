@@ -1,4 +1,4 @@
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import axiosInstance from "./axiosConfig";
 
 export const getAllProducts = async () => {

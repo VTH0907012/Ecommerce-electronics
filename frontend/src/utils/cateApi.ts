@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosConfig";
-import { Category } from "@/type/Category";
+import { Category } from "@/types/Category";
 
 
 export const getAllCategorys= async () => {

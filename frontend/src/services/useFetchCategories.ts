@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { fetcher } from "./useFetchBlogs";
-import { Category } from "@/type/Category";
+import { Category } from "@/types/Category";
 
 export default function useFetchCategories() {
   const { data, error, isLoading , mutate} = useSWR<Category[]>(

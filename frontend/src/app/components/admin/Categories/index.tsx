@@ -1,6 +1,6 @@
 "use client";
 import {  useState } from "react";
-import { Category } from "@/type/Category";
+import { Category } from "@/types/Category";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash } from "react-icons/fa";

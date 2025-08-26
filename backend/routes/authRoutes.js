@@ -10,12 +10,14 @@ const {
   getAllUsers,
   getUser,
   changePassword,
-  googleLogin
+  googleLogin,
+  facebookLogin
 
 } = require("../controllers/authController");
 const { protect } = require("../middleware/authMiddleware");
 
 router.post('/google-login', googleLogin);
+router.post("/facebook-login", facebookLogin);
 
 router.post("/register", register);
 router.post("/login", login);

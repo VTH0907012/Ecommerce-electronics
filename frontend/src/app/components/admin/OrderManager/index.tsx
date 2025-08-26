@@ -1,6 +1,6 @@
 "use client";
 import { useFetchOrders } from "@/services/useFetchOrder";
-import {  OrderStatus } from "@/type/Order";
+import {  OrderStatus } from "@/types/Order";
 import {  updateOrderStatus } from "@/utils/orderApi";
 import { useState } from "react";
 import toast from "react-hot-toast";

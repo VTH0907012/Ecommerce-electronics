@@ -13,7 +13,7 @@ import { cancelOrder } from "@/utils/orderApi";
 import { fmt } from "@/utils/fmt";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ProfileSkeleton } from "../Common/SkeletonLoading";
-import { Order } from "@/type/Order";
+import { Order } from "@/types/Order";
 import ConfirmDeleteModal from "../../Confirm";
 import { useFetchOrdersByUser } from "@/services/useFetchOrder";
 

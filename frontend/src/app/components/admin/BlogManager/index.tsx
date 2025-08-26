@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { deleteBlog } from "@/utils/blogApi";
 import toast from "react-hot-toast";
-import { BlogItem } from "@/type/BlogItem";
+import { BlogItem } from "@/types/BlogItem";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import BlogFormModal from "./BlogForm";

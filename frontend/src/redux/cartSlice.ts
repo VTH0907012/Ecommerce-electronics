@@ -1,6 +1,6 @@
 // redux/cartSlice.ts
-import { CartState } from "@/type/Cart";
-import { Product } from "@/type/Product";
+import { CartState } from "@/types/Cart";
+import { Product } from "@/types/Product";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: CartState = {

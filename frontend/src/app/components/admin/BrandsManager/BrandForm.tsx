@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createBrand, updateBrand } from "@/utils/brandApi";
-import { Brand } from "@/type/Brand";
+import { Brand } from "@/types/Brand";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import Image from "next/image";

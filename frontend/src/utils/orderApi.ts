@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from "@/type/Order";
+import { Order, OrderStatus } from "@/types/Order";
 import axiosInstance from "./axiosConfig";
 
 

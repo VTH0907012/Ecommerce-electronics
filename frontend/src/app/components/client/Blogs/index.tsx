@@ -1,6 +1,6 @@
 "use client";
 import {  useState } from "react";
-import { BlogItem } from "@/type/BlogItem";
+import { BlogItem } from "@/types/BlogItem";
 import Link from "next/link";
 import {
   FiCalendar,

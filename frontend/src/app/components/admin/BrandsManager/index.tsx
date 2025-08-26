@@ -1,7 +1,7 @@
 "use client";
 import {  useState } from "react";
 import {  deleteBrand } from "@/utils/brandApi";
-import { Brand } from "@/type/Brand";
+import { Brand } from "@/types/Brand";
 import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { FaEdit, FaTrash } from "react-icons/fa";

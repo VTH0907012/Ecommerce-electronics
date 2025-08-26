@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { fetcher } from "./useFetchBlogs";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 
 export function useFetchProducts() {
   const { data, error, isLoading, mutate } = useSWR<Product[]>(

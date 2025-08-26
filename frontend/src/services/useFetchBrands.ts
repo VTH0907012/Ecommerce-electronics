@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { Brand } from "@/type/Brand";
+import { Brand } from "@/types/Brand";
 import { fetcher } from "./useFetchBlogs";
 
 export default function useFetchBrands() {

@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { fetcher } from "./useFetchBlogs";
-import { Comment } from "@/type/Comment";
+import { Comment } from "@/types/Comment";
 import { getAllComments } from "@/utils/commentApi";
 
 export  function useFetchComments() {

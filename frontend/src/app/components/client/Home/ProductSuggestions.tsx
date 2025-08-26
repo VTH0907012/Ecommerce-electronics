@@ -158,7 +158,7 @@
 
 "use client";
 import React, {  useRef, useCallback } from "react";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import ProductItem from "../Shop/ProductItem";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";

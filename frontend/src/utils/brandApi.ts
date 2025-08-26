@@ -1,5 +1,5 @@
 import axiosInstance from "./axiosConfig";
-import { Brand } from "@/type/Brand";
+import { Brand } from "@/types/Brand";
 
 
 export const getAllBrands= async () => {

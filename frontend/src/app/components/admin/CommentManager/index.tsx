@@ -7,8 +7,8 @@ import {
 
 } from "@/utils/commentApi";
 import ConfirmDeleteModal from "../../Confirm";
-import { Product } from "@/type/Product";
-import { Comment } from "@/type/Comment";
+import { Product } from "@/types/Product";
+import { Comment } from "@/types/Comment";
 import {
   useFetchComments,
   useFetchCommentsByProductId,

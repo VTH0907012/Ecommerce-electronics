@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createBlog, updateBlog } from "@/utils/blogApi";
-import { BlogItem } from "@/type/BlogItem";
+import { BlogItem } from "@/types/BlogItem";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import Image from "next/image";
 

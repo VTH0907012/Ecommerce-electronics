@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { fetcher } from "./useFetchBlogs";
-import { Order } from "@/type/Order";
+import { Order } from "@/types/Order";
 
 export  function useFetchOrders() {
   const { data, error, isLoading, mutate } = useSWR<Order[]>(

@@ -9,7 +9,7 @@ import { RootState } from "../../../../redux/index";
 import { logout } from "../../../../redux/userSlice";
 import { toggleCart } from "@/redux/cartSlice";
 import { FaChevronDown } from "react-icons/fa";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import { fmt } from "@/utils/fmt";
 import Image from "next/image";
 import { useFetchProducts } from "@/services/useFetchProduct";
@@ -29,11 +29,11 @@ const Navbar = () => {
 
   const searchRef = useRef<HTMLDivElement>(null);
 
-const { products: allProducts = [], isLoading } = useFetchProducts();
+  const { products: allProducts = [], isLoading } = useFetchProducts();
   // const [allProducts, setAllProducts] = useState<Product[]>([]);
   // const [isLoading, setIsLoading] = useState(false);
   // useEffect(() => {
-  //   const fetchProducts = async () => { 
+  //   const fetchProducts = async () => {
   //     try {
   //       setIsLoading(true);
   //       const products = await getAllProducts();
@@ -263,7 +263,7 @@ const { products: allProducts = [], isLoading } = useFetchProducts();
                       <FiUser className="h-5 w-5 group-hover:stroke-blue-600" />
                     </div>
                     <span className="flex items-center">
-                      {user.name.split(" ")[1]}{" "}
+                      {user.name.split(" ").slice(-1)[0]}{" "}
                       <FaChevronDown
                         className={`ml-1 text-xs transition ${
                           isDropdownOpen ? "transform rotate-180" : ""

@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -5,6 +7,61 @@ const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const crypto = require("crypto");
+
+// Login với Facebook
+const facebookLogin = async (req, res) => {
+  try {
+    const { accessToken, userID } = req.body;
+
+    // Gọi Facebook Graph API để lấy thông tin user
+    const fbUrl = `https://graph.facebook.com/v20.0/${userID}?fields=id,name,email&access_token=${accessToken}`;
+    const response = await axios.get(fbUrl);
+
+    const { id: facebookId, name, email } = response.data;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Không lấy được email từ Facebook" });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({
+        name,
+        email,
+        password: crypto.randomBytes(16).toString("hex"), // random password
+        facebookId,
+      });
+      await user.save();
+    }
+
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "Tài khoản đã bị khoá" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Facebook login thất bại", error: err.message });
+  }
+};
 
 const googleLogin = async (req, res) => {
   try {
@@ -50,8 +107,6 @@ const googleLogin = async (req, res) => {
         isAdmin: user.isAdmin,
       },
     });
-
-    
   } catch (err) {
     res
       .status(500)
@@ -165,12 +220,10 @@ const toggleBlockUser = async (req, res) => {
       message: `Người dùng đã bị ${user.isBlocked ? "chặn" : "bỏ chặn"}`,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Không thể chuyển đổi trạng thái chặn",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Không thể chuyển đổi trạng thái chặn",
+      error: err.message,
+    });
   }
 };
 
@@ -190,12 +243,10 @@ const toggleAdmin = async (req, res) => {
       }`,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Không thể chuyển đổi trạng thái quản trị viên",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Không thể chuyển đổi trạng thái quản trị viên",
+      error: err.message,
+    });
   }
 };
 
@@ -205,12 +256,10 @@ const getAllUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Không thể lấy danh sách người dùng",
-        error: err.message,
-      });
+    res.status(500).json({
+      message: "Không thể lấy danh sách người dùng",
+      error: err.message,
+    });
   }
 };
 const getUser = async (req, res) => {
@@ -269,4 +318,5 @@ module.exports = {
   getUser,
   changePassword,
   googleLogin,
+  facebookLogin, // thêm dòng này
 };

@@ -6,7 +6,7 @@ import {
   toggleBlockUser,
   toggleAdmin,
 } from "@/utils/authApi";
-import { User } from "@/type/User";
+import { User } from "@/types/User";
 import toast from "react-hot-toast";
 import {
   FaLock,

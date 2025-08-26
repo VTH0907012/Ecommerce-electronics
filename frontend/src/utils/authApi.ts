@@ -32,7 +32,23 @@ export const loginGoogle = async (credential: string) => {
 
   return data; 
 };
+export const loginFacebook = async (accessToken: string, userID: string) => {
+  const res = await fetch("/api/login-facebook", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ accessToken, userID }),
+  });
 
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Đăng nhập Facebook thất bại");
+  }
+
+  return data;
+};
 
 export const register = async (userData: {
   name: string;

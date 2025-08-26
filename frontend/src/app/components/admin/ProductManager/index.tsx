@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { deleteOldImage } from "@/utils/deleteOldImage";
 import { fmt } from "@/utils/fmt";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import { deleteProduct } from "@/utils/productApi";
 import ProductForm from "./ProductForm";
 import ConfirmDeleteModal from "../../Confirm";

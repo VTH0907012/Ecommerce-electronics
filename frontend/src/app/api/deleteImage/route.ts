@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { unlink } from 'fs/promises'; 
 import path from 'path';
 import { AxiosError } from 'axios';
-import { ErrorResponse } from '@/type/ErrorResponse';
+import { ErrorResponse } from '@/types/ErrorResponse';
 
 export async function POST(req: NextRequest) {
   const { imagePath } = await req.json(); 

@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { FiSearch, FiFilter, FiX } from "react-icons/fi";
-import { Category } from "@/type/Category";
-import { Brand } from "@/type/Brand";
+import { Category } from "@/types/Category";
+import { Brand } from "@/types/Brand";
 import { getAllProducts } from "@/utils/productApi";
 import { getAllCategorys } from "@/utils/cateApi";
 import { getAllBrands } from "@/utils/brandApi";
-import { Product } from "@/type/Product";
+import { Product } from "@/types/Product";
 import ProductItem from "./ProductItem";
 import { useSearchParams } from "next/navigation";
 
