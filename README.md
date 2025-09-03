@@ -15,6 +15,8 @@ Trang web cho phép **khách hàng** có thể tìm kiếm sản phẩm, thêm v
 
 ### 👥 Người dùng (Khách hàng)
 - Đăng ký / Đăng nhập tài khoản
+- Đăng nhập bằng Google
+- Đăng nhập bằng Facebook
 - Xem danh sách sản phẩm theo danh mục và thương hiệu
 - Tìm kiếm và lọc sản phẩm
 - Thêm sản phẩm vào giỏ hàng
