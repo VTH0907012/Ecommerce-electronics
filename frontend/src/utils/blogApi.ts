@@ -23,7 +23,7 @@ export async function getBlogById(id: string){
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
     next: { revalidate: 60 },
   });
-  if (!res.ok) throw new Error("Failed to fetch blogs");
+  if (!res.ok) throw new Error("Failed to fetch blog");
   return res.json();
 }
 
