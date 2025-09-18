@@ -1,10 +1,17 @@
 import { Product } from "@/types/Product";
 import axiosInstance from "./axiosConfig";
 
-export const getAllProducts = async () => {
-  const response = await axiosInstance.get("/api/products");
-  return response.data;
-};
+// export const getAllProducts = async () => {
+//   const response = await axiosInstance.get("/api/products");
+//   return response.data;
+// };
+export async function getAllProducts() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch categories");
+  return res.json();
+}
 
 export const getProductById = async (id: string) => {
   const response = await axiosInstance.get(`/api/products/${id}`);

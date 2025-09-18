@@ -163,18 +163,22 @@ import ProductItem from "../Shop/ProductItem";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import { ProductSkeleton } from "../Common/SkeletonLoading";
+//import { ProductSkeleton } from "../Common/SkeletonLoading";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperCore } from "swiper/types";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useFetchProducts } from "@/services/useFetchProduct";
+//import { useFetchProducts } from "@/services/useFetchProduct";
 
-const ProductSuggestions: React.FC = () => {
+interface ProductSuggestion {
+  products: Product[];
+}
+const ProductSuggestions: React.FC<ProductSuggestion> = ({products}) => {
   const sliderRef = useRef<SwiperCore | null>(null);
   const router = useRouter();
 
-  const { products = [], isLoading } = useFetchProducts();
+  //const { products = [], isLoading } = useFetchProducts();
+  
   const topProducts = products
     .filter((p: Product) => p.rating! > 0)
     .sort((a: any, b: any) => b.rating! - a.rating!)
@@ -224,13 +228,15 @@ const ProductSuggestions: React.FC = () => {
           </button>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))}
-          </div>
-        ) : topProducts.length === 0 ? (
+        {
+        // isLoading ? (
+        //   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        //     {[...Array(4)].map((_, index) => (
+        //       <ProductSkeleton key={index} />
+        //     ))}
+        //   </div>
+        // ) : 
+        topProducts.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             Không có sản phẩm gợi ý nào
           </div>
