@@ -2,10 +2,19 @@ import axiosInstance from "./axiosConfig";
 import { Brand } from "@/types/Brand";
 
 
-export const getAllBrands= async () => {
-    const response = await axiosInstance.get("/api/brands");
-    return response.data;
-  };
+// export const getAllBrands= async () => {
+//     const response = await axiosInstance.get("/api/brands");
+//     return response.data;
+//   };
+
+export async function getAllBrands() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/brands`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch brands");
+  return res.json();
+}
+
 
   
   export const createBrand = async (brand: Brand) => {

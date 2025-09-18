@@ -3,18 +3,29 @@ import { useState, useEffect, useMemo } from "react";
 import { FiSearch, FiFilter, FiX } from "react-icons/fi";
 import { Category } from "@/types/Category";
 import { Brand } from "@/types/Brand";
-import { getAllProducts } from "@/utils/productApi";
-import { getAllCategorys } from "@/utils/cateApi";
-import { getAllBrands } from "@/utils/brandApi";
+// import { getAllProducts } from "@/utils/productApi";
+// import { getAllCategorys } from "@/utils/cateApi";
+// import { getAllBrands } from "@/utils/brandApi";
 import { Product } from "@/types/Product";
 import ProductItem from "./ProductItem";
 import { useSearchParams } from "next/navigation";
 
-const Shop = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [loading, setLoading] = useState(true);
+type Props = {
+  initialProducts: Product[];
+  initialCategories: Category[];
+  initialBrands: Brand[];
+};
+
+const Shop = ({ initialProducts, initialCategories, initialBrands }: Props) => {
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
+  // const [brands, setBrands] = useState<Brand[]>([]);
+
+  const [products] = useState<Product[]>(initialProducts);
+  const [categories] = useState<Category[]>(initialCategories);
+  const [brands] = useState<Brand[]>(initialBrands);
+
+  //const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // State for filters
@@ -37,27 +48,27 @@ const Shop = () => {
     }
   }, [urlCategory]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [productData, categoryData, brandData] = await Promise.all([
-          getAllProducts(),
-          getAllCategorys(),
-          getAllBrands(),
-        ]);
-        setProducts(productData);
-        setCategories(categoryData);
-        setBrands(brandData);
-      } catch (err) {
-        console.error("Lỗi khi tải dữ liệu:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const [productData, categoryData, brandData] = await Promise.all([
+  //         getAllProducts(),
+  //         getAllCategorys(),
+  //         getAllBrands(),
+  //       ]);
+  //       setProducts(productData);
+  //       setCategories(categoryData);
+  //       setBrands(brandData);
+  //     } catch (err) {
+  //       console.error("Lỗi khi tải dữ liệu:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -452,16 +463,18 @@ const Shop = () => {
             )}
 
             {/* Products Display */}
-            {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-                {Array.from({ length: productsPerPage }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-80 bg-gray-100 rounded-lg animate-pulse"
-                  ></div>
-                ))}
-              </div>
-            ) : totalProducts === 0 ? (
+            {
+            // loading ? (
+            //   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+            //     {Array.from({ length: productsPerPage }).map((_, index) => (
+            //       <div
+            //         key={index}
+            //         className="h-80 bg-gray-100 rounded-lg animate-pulse"
+            //       ></div>
+            //     ))}
+            //   </div>
+            // ) : 
+            totalProducts === 0 ? (
               <div className="text-center py-16">
                 <h3 className="text-xl font-medium text-gray-600 mb-2">
                   Không tìm thấy sản phẩm nào
@@ -477,11 +490,7 @@ const Shop = () => {
                 </button>
               </div>
             ) : (
-              // <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              //   {paginatedProducts.map((product) => (
-              //     <ProductItem key={product._id} item={product} />
-              //   ))}
-              // </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {paginatedProducts.map((product) => (
                   <ProductItem key={product._id} item={product} />
@@ -490,7 +499,9 @@ const Shop = () => {
             )}
 
             {/* Pagination */}
-            {!loading && totalProducts > 0 && totalPages > 1 && (
+            {
+            //!loading && 
+            totalProducts > 0 && totalPages > 1 && (
               <div className="mt-8 flex items-center justify-between">
                 <div className="text-sm text-gray-500">
                   Hiển thị{" "}

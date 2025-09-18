@@ -1,14 +1,19 @@
 "use client";
-import {  } from "react";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 import Link from "next/link";
 import { FiArrowLeft, FiCalendar, FiClock } from "react-icons/fi";
 import Image from "next/image";
-import { useFetchBlogById } from "@/services/useFetchBlogs";
+import { BlogItem } from "@/types/BlogItem";
+// import { useFetchBlogById } from "@/services/useFetchBlogs";
 
-const BlogDetails = () => {
-  const { id } = useParams();
+type BlogDetailsProps = {
+  blog: BlogItem | null;
+};
+
+
+const BlogDetails = ({ blog }: BlogDetailsProps) => {
+  //const { id } = useParams();
 
   // const [blog, setBlog] = useState<BlogItem | null>(null);
   // const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +29,8 @@ const BlogDetails = () => {
   //       });
   //   }
   // }, [id]);
-const { blog, isLoading } = useFetchBlogById(id as string);
+
+  //const { blog, isLoading } = useFetchBlogById(id as string);
 
 
   const calculateReadTime = (content: string) => {
@@ -33,24 +39,24 @@ const { blog, isLoading } = useFetchBlogById(id as string);
     return Math.ceil(wordCount / wordsPerMinute);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse space-y-8">
-            <div className="h-6 w-32 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-96 bg-gray-200 rounded"></div>
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 py-16">
+  //       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+  //         <div className="animate-pulse space-y-8">
+  //           <div className="h-6 w-32 bg-gray-200 rounded"></div>
+  //           <div className="h-12 bg-gray-200 rounded w-3/4"></div>
+  //           <div className="h-96 bg-gray-200 rounded"></div>
+  //           <div className="space-y-4">
+  //             <div className="h-4 bg-gray-200 rounded"></div>
+  //             <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+  //             <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!blog) {
     return (

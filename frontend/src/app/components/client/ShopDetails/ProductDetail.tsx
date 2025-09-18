@@ -13,12 +13,17 @@ import Breadcrumb from "./Breadcrumb";
 import { motion } from "framer-motion";
 import ProductItem from "../Shop/ProductItem";
 import CommentSection from "./CommentSection";
-import {
-  useFetchProductById,
-  useFetchRelatedProduct,
-} from "@/services/useFetchProduct";
+// import {
+//   useFetchProductById,
+//   useFetchRelatedProduct,
+// } from "@/services/useFetchProduct";
 
-const ProductDetail = () => {
+interface ProductDetailProps {
+  product: Product;
+  relatedProducts: Product[];
+}
+
+const ProductDetail = ({ product, relatedProducts }: ProductDetailProps) => {
   const { id } = useParams();
 
   // const [isLoading, setIsLoading] = useState(true);
@@ -44,14 +49,15 @@ const ProductDetail = () => {
   //       setLoadingRelated(false);
   //     }
   //   };
-
   //   if (id) {
   //     fetchData();
   //   }
   // }, [id]);
-  const { product, isLoading } = useFetchProductById(id as string);
-  const { product: relatedProducts = [], isLoading: isLoadingRelated } =
-    useFetchRelatedProduct(id as string);
+
+
+  // const { product, isLoading } = useFetchProductById(id as string);
+  // const { product: relatedProducts = [], isLoading: isLoadingRelated } =
+  //   useFetchRelatedProduct(id as string);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -68,7 +74,9 @@ const ProductDetail = () => {
     dispatch(addToCart({ ...item, quantityToBuy: quantity }));
   };
 
-  if (isLoading || !product) {
+  if (
+    //isLoading|| 
+    !product) {
     return <ProductDetailSkeleton />;
   }
 
@@ -314,23 +322,25 @@ const ProductDetail = () => {
             Sản phẩm liên quan
           </h2>
 
-          {isLoadingRelated ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 gap-6">
-              {[...Array(5)].map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-sm p-4 h-full"
-                >
-                  <div className="animate-pulse">
-                    <div className="bg-gray-200 h-40 rounded-md mb-3"></div>
-                    <div className="bg-gray-200 h-4 rounded mb-2"></div>
-                    <div className="bg-gray-200 h-4 rounded w-3/4 mb-3"></div>
-                    <div className="bg-gray-200 h-4 rounded w-1/2"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : relatedProducts.length > 0 ? (
+          {
+          // isLoadingRelated ? (
+          //   <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 gap-6">
+          //     {[...Array(5)].map((_, index) => (
+          //       <div
+          //         key={index}
+          //         className="bg-white rounded-lg shadow-sm p-4 h-full"
+          //       >
+          //         <div className="animate-pulse">
+          //           <div className="bg-gray-200 h-40 rounded-md mb-3"></div>
+          //           <div className="bg-gray-200 h-4 rounded mb-2"></div>
+          //           <div className="bg-gray-200 h-4 rounded w-3/4 mb-3"></div>
+          //           <div className="bg-gray-200 h-4 rounded w-1/2"></div>
+          //         </div>
+          //       </div>
+          //     ))}
+          //   </div>
+          // ) : 
+          relatedProducts.length > 0 ? (
             <motion.div
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
               initial={{ opacity: 0 }}

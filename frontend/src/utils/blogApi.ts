@@ -1,14 +1,30 @@
 import {  BlogItem } from "@/types/BlogItem";
-import axiosInstance from "./axiosConfig";
+// import axiosInstance from "./axiosConfig";
 
+// export async function getAllBlogs() {
+//   const response = await axiosInstance.get("/api/blogs");
+//   return response.data;
+// }
 export async function getAllBlogs() {
-  const response = await axiosInstance.get("/api/blogs");
-  return response.data;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch blogs");
+  return res.json();
 }
 
+
+// export async function getBlogById(id: string){
+//   const response = await axiosInstance.get(`/api/blogs/${id}`);
+//   return response.data;
+// }
+
 export async function getBlogById(id: string){
-  const response = await axiosInstance.get(`/api/blogs/${id}`);
-  return response.data;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error("Failed to fetch blogs");
+  return res.json();
 }
 
 export async function createBlog(blog: BlogItem) {
